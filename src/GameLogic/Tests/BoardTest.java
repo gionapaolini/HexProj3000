@@ -14,39 +14,28 @@ public class BoardTest {
         Board board = new Board(11);
         Cell[][] grid = board.getGrid();
 
-        Scanner scanner = new Scanner(System.in);
-        int x = 0;
-        int y = 0;
-
-        while (x!=500) {
-            x = scanner.nextInt();
-            y = scanner.nextInt();
-            Cell[] arrayCell = grid[y][x].getNeighbors();
-
-            for (int i = 0; i < board.getSize(); i++) {
-                for (int j = 0; j < board.getSize(); j++) {
-                    boolean gne = false;
-                    for(int k=0;k<6;k++){
-                        if(grid[i][j].equals(arrayCell[k])) {
-                            System.out.print("N ");
-                            gne = true;
-                            break;
-                        }
-                    }
-                    if(gne)
-                        continue;
-
-                    if (grid[i][j].getStatus() == StatusCell.Empty)
-                        System.out.print("O ");
-                    else if (grid[i][j].getStatus() == StatusCell.Red)
-                        System.out.print("R ");
-                    else if (grid[i][j].getStatus() == StatusCell.Blue)
-                        System.out.print("B ");
+        grid[5][0].setStatus(StatusCell.Red);
+        grid[4][1].setStatus(StatusCell.Blue);
+        grid[3][2].setStatus(StatusCell.Red);
 
 
-                }
-                System.out.println(" ");
+
+
+        for (int i = 0; i < board.getSize(); i++) {
+            for (int j = 0; j < board.getSize(); j++) {
+
+                if (grid[i][j].getStatus() == StatusCell.Empty)
+                    System.out.print("O ");
+                else if (grid[i][j].getStatus() == StatusCell.Red)
+                    System.out.print("R ");
+                else if (grid[i][j].getStatus() == StatusCell.Blue)
+                    System.out.print("B ");
+
+
             }
+            System.out.println(" ");
+
         }
+        System.out.println(board.isConnected(grid[5][0],grid[3][2]));
     }
 }

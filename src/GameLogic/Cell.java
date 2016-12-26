@@ -52,4 +52,13 @@ public class Cell {
         return neighbors;
     }
 
+    public int getCoordXJ(){
+        return coordXJ;
+    }
+    public int getCoordYI(){
+        return coordYI;
+    }
+
+
+
 }
