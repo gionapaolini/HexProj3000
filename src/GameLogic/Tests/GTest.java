@@ -25,7 +25,7 @@ public class GTest {
         grid[4][1].setStatus(StatusCell.Blue);
         grid[3][2].setStatus(StatusCell.Red);
 
-        JPanel panel = new BoardGraphics(grid);
+        JPanel panel = new BoardGraphics(grid,frame);
         frame.add(panel);
     }
 }
