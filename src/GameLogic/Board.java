@@ -1,5 +1,7 @@
 package GameLogic;
 
+import EnumVariables.StatusCell;
+
 /**
  * Created by giogio on 12/26/16.
  */
@@ -40,10 +42,14 @@ public class Board {
     }
 
     //check if two cells are connected by a colour.
-    public boolean isConnected(Cell start, Cell target){
+    public boolean isConnected(Cell start, Cell target, StatusCell color){
+        //if the start or the target are empty or
         //if the start color is different from the target color then the two are not connected and return false
-        if(start.getStatus()!=target.getStatus())
+
+        if(start.getStatus()!=color || target.getStatus()!= color || start.getStatus()==StatusCell.Empty || target.getStatus() ==StatusCell.Empty || start.getStatus()!=target.getStatus())
             return false;
+
+
 
         //otherwise it creates a grid of boolean to keep track of the checked cells.
         boolean[][] statusGrid = new boolean[size][size];
@@ -73,6 +79,33 @@ public class Board {
         //return false if it checks all possible connections without finding the target
         return false;
 
+    }
+
+    public void putStone(int x, int y, StatusCell color){
+        if(grid[y][x].getStatus()== StatusCell.Empty){
+            grid[y][x].setStatus(color);
+        }else {
+            System.out.println("Not available!");
+        }
+    }
+
+    public boolean hasWon(StatusCell color){
+        if(color == StatusCell.Red){
+            for (int i=0;i<size;i++){
+                for (int j=0;j<size;j++){
+                    if(isConnected(grid[0][i],grid[size-1][j],color))
+                        return true;
+                }
+            }
+        }else {
+            for (int i=0;i<size;i++){
+                for (int j=0;j<size;j++){
+                    if(isConnected(grid[i][0],grid[j][size-1], color))
+                        return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

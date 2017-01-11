@@ -34,6 +34,6 @@ public class BoardTest {
             System.out.println(" ");
 
         }
-        System.out.println(board.isConnected(grid[5][0],grid[3][2]));
+        System.out.println(board.isConnected(grid[5][0],grid[3][2],null));
     }
 }

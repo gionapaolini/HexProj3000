@@ -22,7 +22,7 @@ public class GTest {
 
 
 
-        JPanel panel = new BoardGraphics(grid,frame);
+        JPanel panel = new BoardGraphics(null,frame);
         frame.add(panel);
     }
 }

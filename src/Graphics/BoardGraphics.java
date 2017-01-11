@@ -2,10 +2,13 @@ package Graphics;
 
 import GameLogic.Cell;
 import EnumVariables.StatusCell;
+import GameLogic.Match;
+import GameLogic.Observer;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
@@ -13,31 +16,62 @@ import java.awt.geom.Rectangle2D;
 /**
  * Created by giogio on 12/26/16.
  */
-public class BoardGraphics extends JPanel{
+public class BoardGraphics extends JPanel implements Observer{
+    Match match;
     Cell[][] grid;
     Path2D[][] polyCells;
     JFrame mainFrame;
+    Color color;
     boolean current;
     float distanceXY;
     float proportion = 4;
     int x,y;
-    public BoardGraphics(Cell[][] board, JFrame frame){
-        grid = board;
+    public BoardGraphics(Match match, JFrame frame){
+        grid = match.getBoard().getGrid();
         mainFrame = frame;
         this.setSize(frame.getSize());
         this.setPreferredSize(frame.getSize());
+        this.match = match;
 
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent mouseEvent) {
+                if(current && !match.isPaused())
+                    match.putStone(x,y);
+            }
+
+            @Override
+            public void mousePressed(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent mouseEvent) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent mouseEvent) {
+
+            }
+        });
 
 
         addMouseMotionListener(new MouseMotionListener() {
             @Override
             public void mouseMoved(MouseEvent event) {
-               checkBounds(event);
+                if(!match.isPaused() && !match.isBotTurn())
+                    checkBounds(event);
             }
 
             @Override
             public void mouseDragged(MouseEvent event) {
-                checkBounds(event);
+
             }
         });
 
@@ -66,12 +100,12 @@ public class BoardGraphics extends JPanel{
         Graphics2D g2 = (Graphics2D) g;
         if(polyCells==null)
             generateHexGrid();
-        paintBorders(g);
+        //paintBorders(g);
         for (int i=0;i<grid.length;i++){
             for (int j=0;j<grid.length;j++){
 
                if(current && i==y & j==x){
-                   g2.setColor(Color.YELLOW);
+                   g2.setColor(color);
                }else if(grid[i][j].getStatus()==StatusCell.Blue){
                    g2.setColor(Color.BLUE);
                }else if(grid[i][j].getStatus()==StatusCell.Red){
@@ -116,6 +150,8 @@ public class BoardGraphics extends JPanel{
         current = false;
         for(int i=0;i<grid.length;i++){
             for(int j=0;j<grid.length;j++){
+                if(grid[i][j].getStatus()!=StatusCell.Empty)
+                    continue;
                 Rectangle2D bound = polyCells[i][j].getBounds2D();
                 if(event.getX()>=bound.getX() && event.getX()<=bound.getX()+bound.getWidth() &&
                         event.getY()>=bound.getY() && event.getY()<=bound.getY()+bound.getHeight()){
@@ -154,9 +190,6 @@ public class BoardGraphics extends JPanel{
         upperSide.addPoint((int)point3X,(int)point3Y);
 
 
-
-
-
         double point1X2 = point3X + polyCells[0][0].getBounds2D().getWidth()/2 * (polyCells.length-2);
         double point1Y2 = polyCells[0][0].getBounds2D().getY() + polyCells[0][0].getBounds2D().getHeight()*(polyCells.length);
 
@@ -184,7 +217,18 @@ public class BoardGraphics extends JPanel{
     }
 
 
+    @Override
+    public void update() {
+        System.out.println("Updated");
+        if(match.isPaused() || match.isBotTurn()){
+            current=false;
+        }
+        if(match.getCurrentColorPlayer()==StatusCell.Red)
+            color = new Color(255,0,0,100);
+        else
+            color = new Color(0,0,255,100);
+        repaint();
 
-
+    }
 }
 
