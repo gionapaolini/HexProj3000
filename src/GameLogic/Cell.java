@@ -1,6 +1,6 @@
 package GameLogic;
 
-import GameLogic.EnumVariables.StatusCell;
+import EnumVariables.StatusCell;
 
 /**
  * Created by giogio on 12/26/16.

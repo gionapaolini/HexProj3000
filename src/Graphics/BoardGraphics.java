@@ -1,12 +1,13 @@
 package Graphics;
 
 import GameLogic.Cell;
-import GameLogic.EnumVariables.StatusCell;
+import EnumVariables.StatusCell;
 
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Path2D;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -14,15 +15,11 @@ import java.awt.geom.Rectangle2D;
  */
 public class BoardGraphics extends JPanel{
     Cell[][] grid;
+    Path2D[][] polyCells;
     JFrame mainFrame;
-    float proportion=1;
-    float dimension;
-    float distanceX;
-    float distanceY;
-    float offsetX;
-    float offsetY;
-    float stepOffsetX;
     boolean current;
+    float distanceXY;
+    float proportion = 4;
     int x,y;
     public BoardGraphics(Cell[][] board, JFrame frame){
         grid = board;
@@ -49,52 +46,66 @@ public class BoardGraphics extends JPanel{
 
     }
 
-    public Polygon getHexagon(float x, float y, float h)
+    public Path2D getHexagon(float x, float y, float radius)
     {
-        Polygon hexagon = new Polygon();
 
-        for (int i=0; i < 7; i++)
-        {
-            double a = Math.PI / 3.0 * i;
-            hexagon.addPoint((int)(Math.round(x + Math.sin(a) * h)), (int)(Math.round(y + Math.cos(a) * h)));
+        Path2D hexagon = new Path2D.Double();
+
+        hexagon.moveTo(x + radius*Math.sin(0), y + radius* Math.cos(0));
+        for(int i = 1; i < 6; ++i) {
+            hexagon.lineTo(x + radius*Math.sin(i*2*Math.PI/6), y + radius* Math.cos(i*2*Math.PI/6));
         }
+        hexagon.closePath();
+
         return hexagon;
     }
 
     public void paintComponent(Graphics g){
         super.paintComponent(g);
-        this.setSize(mainFrame.getSize());
-        this.setPreferredSize(mainFrame.getSize());
-        proportion = mainFrame.getSize().width/(float)(30*grid.length);
-        dimension = 10*proportion;
-        distanceX=20*proportion;
-        distanceY=20*proportion;
-        offsetX =10*proportion;
-        offsetY =10*proportion;
-        stepOffsetX = 10*proportion;
-        for(int i=0;i<grid.length;i++){
-            for(int j=0;j<grid.length;j++){
 
-                if(grid[i][j].getStatus()== StatusCell.Blue) {
-                    g.setColor(Color.blue);
-                    g.fillPolygon(getHexagon(j*distanceX+offsetX,i*distanceY+offsetY,dimension));
-                }
-                else if(grid[i][j].getStatus()== StatusCell.Red) {
-                    g.setColor(Color.red);
-                    g.fillPolygon(getHexagon(j*distanceX+offsetX,i*distanceY+offsetY,dimension));
-                }
-                else {
-                    if(current && x==j && y==i) {
-                        g.setColor(Color.yellow);
-                        g.fillPolygon(getHexagon(j * distanceX + offsetX, i * distanceY + offsetY, dimension));
+        Graphics2D g2 = (Graphics2D) g;
+        if(polyCells==null)
+            generateHexGrid();
+        paintBorders(g);
+        for (int i=0;i<grid.length;i++){
+            for (int j=0;j<grid.length;j++){
 
-                    }else {
-                        g.setColor(Color.black);
-                        g.drawPolygon(getHexagon(j * distanceX + offsetX, i * distanceY + offsetY, dimension));
-                    }
-                }
+               if(current && i==y & j==x){
+                   g2.setColor(Color.YELLOW);
+               }else if(grid[i][j].getStatus()==StatusCell.Blue){
+                   g2.setColor(Color.BLUE);
+               }else if(grid[i][j].getStatus()==StatusCell.Red){
+                    g2.setColor(Color.RED);
+               }
+               else {
+                   g2.setColor(Color.gray);
+               }
+               g2.fill(polyCells[i][j]);
+               g2.setColor(Color.black);
+               g2.draw(polyCells[i][j]);
+
             }
-            offsetX+=stepOffsetX;
+        }
+
+    }
+
+    private void generateHexGrid(){
+        float initX = 40;
+        float initY = 40;
+        float radius = 10*proportion;
+        distanceXY=3*proportion;
+        float X;
+        float Y;
+        polyCells = new Path2D[grid.length][grid.length];
+        for (int i=0;i<grid.length;i++){
+            X = initX+radius*i-radius/8*i ;
+            Y = initY+(radius*i)+(radius*i)/2 +i*distanceXY;
+            for (int j=0;j<grid.length;j++){
+                polyCells[i][j] = getHexagon(X,Y,radius);
+                X+=radius*2-radius/4 +distanceXY;
+            }
+
+
 
         }
 
@@ -103,16 +114,9 @@ public class BoardGraphics extends JPanel{
 
     private void checkBounds(MouseEvent event){
         current = false;
-        proportion = mainFrame.getSize().width/(float)(30*grid.length);
-        dimension = 10*proportion;
-        distanceX=20*proportion;
-        distanceY=20*proportion;
-        offsetX =10*proportion;
-        offsetY =10*proportion;
-        stepOffsetX = 10*proportion;
         for(int i=0;i<grid.length;i++){
             for(int j=0;j<grid.length;j++){
-                Rectangle2D bound = getHexagon(j * distanceX + offsetX, i * distanceY + offsetY, dimension).getBounds2D();
+                Rectangle2D bound = polyCells[i][j].getBounds2D();
                 if(event.getX()>=bound.getX() && event.getX()<=bound.getX()+bound.getWidth() &&
                         event.getY()>=bound.getY() && event.getY()<=bound.getY()+bound.getHeight()){
                     current = true;
@@ -120,16 +124,65 @@ public class BoardGraphics extends JPanel{
                     y = i;
                     break;
                 }
-
-             }
+            }
             if(current)
                 break;
-            offsetX+=stepOffsetX;
-
         }
         repaint();
 
     }
+
+    public void paintBorders(Graphics g2){
+
+        Polygon upperSide = new Polygon();
+        double lenghtX = polyCells[0][0].getBounds2D().getWidth()*(grid.length)+(distanceXY*(grid.length-1));
+        double point1X = polyCells[0][0].getBounds2D().getX() - (3*proportion);
+        double point1Y = polyCells[0][0].getBounds2D().getY() - (3*proportion);
+
+        double point2X = point1X + lenghtX + (6*proportion);
+        double point2Y = point1Y;
+
+        double point3X = point1X + polyCells[0][0].getBounds2D().getWidth()/2;
+        double point3Y = point1Y + polyCells[0][0].getBounds2D().getWidth()/2;
+
+        double point4X = point2X - polyCells[0][0].getBounds2D().getWidth()/2;
+        double point4Y = point3Y;
+
+        upperSide.addPoint((int)point1X,(int)point1Y);
+        upperSide.addPoint((int)point2X,(int)point2Y);
+        upperSide.addPoint((int)point4X,(int)point4Y);
+        upperSide.addPoint((int)point3X,(int)point3Y);
+
+
+
+
+
+        double point1X2 = point3X + polyCells[0][0].getBounds2D().getWidth()/2 * (polyCells.length-2);
+        double point1Y2 = polyCells[0][0].getBounds2D().getY() + polyCells[0][0].getBounds2D().getHeight()*(polyCells.length);
+
+        double point2X2 = point1X2 + lenghtX +(6*proportion);
+        double point2Y2 = point1Y2;
+
+
+
+
+
+
+
+        Polygon lowerSide = new Polygon();
+        lowerSide.addPoint((int)point1X2,(int)point1Y2);
+        lowerSide.addPoint((int)point2X2,(int)point2Y2);
+        lowerSide.addPoint((int)100,(int)100);
+
+
+        g2.setColor(Color.RED);
+        g2.fillPolygon(upperSide);
+        g2.fillPolygon(lowerSide);
+
+
+
+    }
+
 
 
 

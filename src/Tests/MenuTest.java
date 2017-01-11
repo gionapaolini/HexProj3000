@@ -1,9 +1,8 @@
-package GameLogic.Tests;
+package Tests;
 
 import Graphics.MenuGUI;
 
 import javax.swing.*;
-import java.awt.*;
 
 /**
  * Created by giogio on 12/28/16.

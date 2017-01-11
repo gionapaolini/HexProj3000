@@ -1,10 +1,8 @@
-package GameLogic.Tests;
+package Tests;
 
 import GameLogic.Board;
 import GameLogic.Cell;
-import GameLogic.EnumVariables.StatusCell;
-
-import java.util.Scanner;
+import EnumVariables.StatusCell;
 
 /**
  * Created by giogio on 12/26/16.

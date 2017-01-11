@@ -1,8 +1,7 @@
-package GameLogic.Tests;
+package Tests;
 
 import GameLogic.Board;
 import GameLogic.Cell;
-import GameLogic.EnumVariables.StatusCell;
 import Graphics.BoardGraphics;
 
 import javax.swing.*;
@@ -18,12 +17,10 @@ public class GTest {
         frame.setSize(new Dimension(500,500));
         frame.setVisible(true);
 
-        Board board = new Board(11);
+        Board board = new Board(5);
         Cell[][] grid = board.getGrid();
 
-        grid[5][0].setStatus(StatusCell.Red);
-        grid[4][1].setStatus(StatusCell.Blue);
-        grid[3][2].setStatus(StatusCell.Red);
+
 
         JPanel panel = new BoardGraphics(grid,frame);
         frame.add(panel);

@@ -1,14 +1,8 @@
 package Graphics;
-
-import GameLogic.EnumVariables.StatusCell;
 import net.miginfocom.swing.MigLayout;
-
 import javax.swing.*;
-import javax.swing.text.NumberFormatter;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.NumberFormat;
 
 /**
  * Created by giogio on 12/28/16.
@@ -48,12 +42,16 @@ public class MenuGUI extends JPanel {
 
     public MenuGUI(JFrame frame){
         this.frame = frame;
+
+
+
         blueDepthTree.setText("1000");
         redDepthTree.setText("1000");
         blueMaxTime.setText("1000");
         redMaxTime.setText("1000");
 
         setListener();
+
         this.setLayout(new MigLayout("","center"));
         this.add(title, "span");
         this.add(swapRuleLabel);
@@ -71,6 +69,7 @@ public class MenuGUI extends JPanel {
         this.add(learningLabel);
         this.add(learningMode,"wrap");
     }
+
     public void humanBot(){
         clear();
         colorType.setSelectedItem("Blue");
