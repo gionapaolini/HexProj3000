@@ -36,8 +36,10 @@ public class BoardGraphics extends JPanel implements Observer{
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent mouseEvent) {
-                if(current && !match.isPaused())
-                    match.putStone(x,y);
+                if(current && !match.isPaused()) {
+                    match.putStone(x, y);
+                    current=false;
+                }
             }
 
             @Override
@@ -219,7 +221,7 @@ public class BoardGraphics extends JPanel implements Observer{
 
     @Override
     public void update(boolean important) {
-        System.out.println("Updated");
+        grid = match.getBoard().getGrid();
         if(match.isPaused() || match.isBotTurn()){
             current=false;
         }
@@ -228,7 +230,7 @@ public class BoardGraphics extends JPanel implements Observer{
         else
             color = new Color(0,0,255,100);
 
-        if(match.isSwapRule() && match.getHistory().getRecords().size()<=1){
+        if(match.isSwapRule() && match.getHistory().getNValidRecords()<=1){
             canSwap = true;
         }else{
             canSwap = false;

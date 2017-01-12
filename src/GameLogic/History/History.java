@@ -21,4 +21,12 @@ public class History {
     public ArrayList<RecordMove> getRecords(){
         return records;
     }
+    public int getNValidRecords(){
+        int count=0;
+        for (RecordMove recordMove: records){
+            if(recordMove.isStatus())
+                count++;
+        }
+        return count;
+    }
 }

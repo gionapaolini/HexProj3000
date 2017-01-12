@@ -1,11 +1,15 @@
 package Graphics;
 
+import EnumVariables.GameType;
 import EnumVariables.StatusCell;
+import GameLogic.Match;
 import GameLogic.TimeGame;
 import net.miginfocom.swing.MigLayout;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by giogio on 1/11/17.
@@ -17,8 +21,11 @@ public class ControlPanel extends JPanel {
     private final JButton undoButton = new JButton("Undo");
     private final JButton loadButton = new JButton("Load");
     private final JButton saveButton = new JButton("Save");
+    private final JButton analisysButton = new JButton("Open Analisys window");
+    private final JButton backButton = new JButton("Back to menu");
+    private Match match;
 
-    public ControlPanel(){
+    public ControlPanel(Match match){
         setSize(new Dimension(200,400));
         setPreferredSize(new Dimension(200,400));
         setBackground(Color.GREEN);
@@ -29,6 +36,10 @@ public class ControlPanel extends JPanel {
         add(pauseButton,"wrap");
         add(loadButton);
         add(saveButton,"wrap");
+        add(analisysButton,"span");
+        add(backButton,"span");
+        this.match = match;
+        setActionsButton();
 
     }
     public void setPlayerTurn(StatusCell color){
@@ -42,4 +53,27 @@ public class ControlPanel extends JPanel {
         playerText.setText("<html>Player <font color='"+color+"'>"+color+"</font> WON!</html>");
 
     }
+
+    private void setActionsButton(){
+        undoButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                if(match.getGameType() == GameType.Multiplayer)
+                    match.undo();
+                else if(match.getGameType() == GameType.HumanVsBot){
+                    match.undo();
+                    match.undo();
+                }
+                match.notifyImportant();
+            }
+        });
+
+        pauseButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                match.pause();
+            }
+        });
+    }
+
 }

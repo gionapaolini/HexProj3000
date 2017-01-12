@@ -31,7 +31,7 @@ public class GameGui implements Observer{
         openHistory.setPreferredSize(new Dimension(5,400));
         this.match = match;
         this.graphics = graphics;
-        controlPanel = new ControlPanel();
+        controlPanel = new ControlPanel(match);
         historyPanel = new HistoryPanel(this);
         mainFrame.add(controlPanel);
         mainFrame.add(graphics);
@@ -75,4 +75,5 @@ public class GameGui implements Observer{
         }
 
     }
+
 }

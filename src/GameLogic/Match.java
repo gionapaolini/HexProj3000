@@ -171,13 +171,13 @@ public class Match {
     }
 
 
-    private void notifyImportant(){
+    public void notifyImportant(){
         for(Observer observer:observers){
             observer.update(true);
         }
     }
 
-    private void notifyObserver(){
+    public void notifyObserver(){
         for(Observer observer:observers){
             observer.update(false);
         }
@@ -197,6 +197,52 @@ public class Match {
             timer.stop();
         else
             timer.start();
+    }
+
+    public void loadHistory(History history){
+        board = new Board(boardSize);
+        for (RecordMove recordMove: history.getRecords()){
+            if(recordMove.isStatus())
+                board.putStone(recordMove.getX(),recordMove.getY(),recordMove.getColor());
+        }
+    }
+
+    public void undo(){
+        int count = 1;
+        while (count <= history.getRecords().size() && !history.getRecords().get(history.getRecords().size() - count).isStatus()) {
+            count++;
+        }
+        if (!(count > history.getRecords().size()))
+            history.getRecords().get(history.getRecords().size() - count).deleteMove();
+
+        count=1;
+        while (count <= history.getRecords().size() && !history.getRecords().get(history.getRecords().size() - count).isStatus()) {
+            count++;
+        }
+        if(count>history.getRecords().size()){
+            if(players[0].getColor()==StatusCell.Blue)
+                currentPlayer=0;
+            else
+                currentPlayer=1;
+        }else if(history.getRecords().get(history.getRecords().size()-count).getColor()==StatusCell.Blue){
+            if(players[0].getColor()==StatusCell.Blue)
+                currentPlayer=1;
+            else
+                currentPlayer=0;
+        }else{
+            if(players[0].getColor()==StatusCell.Red)
+                currentPlayer=1;
+            else
+                currentPlayer=0;
+        }
+
+        loadHistory(history);
+
+
+    }
+
+    public GameType getGameType(){
+        return gameType;
     }
 
 }
