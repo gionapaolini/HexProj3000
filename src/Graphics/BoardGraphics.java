@@ -17,21 +17,21 @@ import java.awt.geom.Rectangle2D;
  * Created by giogio on 12/26/16.
  */
 public class BoardGraphics extends JPanel implements Observer{
-    Match match;
-    Cell[][] grid;
-    Path2D[][] polyCells;
-    JFrame mainFrame;
-    Color color;
-    boolean current;
-    float distanceXY;
-    float proportion = 4;
-    int x,y;
-    public BoardGraphics(Match match, JFrame frame){
+    private Match match;
+    private Cell[][] grid;
+    private Path2D[][] polyCells;
+    private Color color;
+    private boolean current, canSwap;
+    private float distanceXY;
+    private float proportion = 4;
+    private int x,y;
+    public BoardGraphics(Match match){
         grid = match.getBoard().getGrid();
-        mainFrame = frame;
-        this.setSize(frame.getSize());
-        this.setPreferredSize(frame.getSize());
+
+        this.setSize(new Dimension(600,400));
+        this.setPreferredSize(new Dimension(600,400));
         this.match = match;
+        match.addObserver(this);
 
         addMouseListener(new MouseListener() {
             @Override
@@ -150,7 +150,7 @@ public class BoardGraphics extends JPanel implements Observer{
         current = false;
         for(int i=0;i<grid.length;i++){
             for(int j=0;j<grid.length;j++){
-                if(grid[i][j].getStatus()!=StatusCell.Empty)
+                if(!canSwap && grid[i][j].getStatus()!=StatusCell.Empty)
                     continue;
                 Rectangle2D bound = polyCells[i][j].getBounds2D();
                 if(event.getX()>=bound.getX() && event.getX()<=bound.getX()+bound.getWidth() &&
@@ -218,7 +218,7 @@ public class BoardGraphics extends JPanel implements Observer{
 
 
     @Override
-    public void update() {
+    public void update(boolean important) {
         System.out.println("Updated");
         if(match.isPaused() || match.isBotTurn()){
             current=false;
@@ -227,6 +227,12 @@ public class BoardGraphics extends JPanel implements Observer{
             color = new Color(255,0,0,100);
         else
             color = new Color(0,0,255,100);
+
+        if(match.isSwapRule() && match.getHistory().getRecords().size()<=1){
+            canSwap = true;
+        }else{
+            canSwap = false;
+        }
         repaint();
 
     }

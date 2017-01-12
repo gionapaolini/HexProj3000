@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class History {
 
-    private List<RecordMove> records;
+    private ArrayList<RecordMove> records;
 
     public History(){
         records = new ArrayList<RecordMove>();
@@ -18,7 +18,7 @@ public class History {
         records.add(record);
     }
 
-    public List<RecordMove> getRecords(){
+    public ArrayList<RecordMove> getRecords(){
         return records;
     }
 }

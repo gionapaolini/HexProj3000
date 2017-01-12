@@ -25,6 +25,19 @@ public class RecordMove {
         return color+" "+x+" "+y+" "+status;
     }
 
+    public StatusCell getColor() {
+        return color;
+    }
 
+    public boolean isStatus() {
+        return status;
+    }
 
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
+    }
 }

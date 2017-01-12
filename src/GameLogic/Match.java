@@ -3,7 +3,12 @@ package GameLogic;
 import EnumVariables.BotType;
 import EnumVariables.GameType;
 import EnumVariables.StatusCell;
+import GameLogic.History.History;
+import GameLogic.History.RecordMove;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +28,9 @@ public class Match {
     private BotType bot2Type;
     private boolean botTurn, paused, won;
     private ArrayList<Observer> observers;
+    private History history;
+    private TimeGame timeGame;
+    private Timer timer;
 
     public Match(int boardSize, GameType gameType, boolean swapRule) {
         this.boardSize = boardSize;
@@ -54,6 +62,17 @@ public class Match {
         board = new Board(boardSize);
         observers = new ArrayList<Observer>();
         paused=false;
+        history = new History();
+        timeGame = new TimeGame();
+        timer = new Timer(1000, new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                timeGame.increment();
+                notifyObserver();
+
+            }
+        });
+        timer.start();
 
     }
 
@@ -112,18 +131,25 @@ public class Match {
         return board;
     }
 
+    public boolean isSwapRule(){
+        return swapRule;
+    }
+
+    public History getHistory(){
+        return history;
+    }
     public void putStone(int x, int y){
         if(!paused) {
             board.putStone(x, y, players[currentPlayer].getColor());
+            history.addRecord(new RecordMove(players[currentPlayer].getColor(),x,y));
             if (board.hasWon(players[currentPlayer].getColor())) {
                 System.out.println("WON"+players[currentPlayer].getColor());
                 won = true;
-                paused = true;
-
+                pause();
             } else {
                 switchPlayer();
             }
-            notifyObserver();
+            notifyImportant();
             System.out.println("Notified");
         }
     }
@@ -144,10 +170,33 @@ public class Match {
         return players[currentPlayer].getColor();
     }
 
+
+    private void notifyImportant(){
+        for(Observer observer:observers){
+            observer.update(true);
+        }
+    }
+
     private void notifyObserver(){
         for(Observer observer:observers){
-            observer.update();
+            observer.update(false);
         }
+    }
+
+    public boolean isWon() {
+        return won;
+    }
+
+    public TimeGame getTime(){
+        return timeGame;
+    }
+
+    public void pause(){
+        paused=!paused;
+        if(paused)
+            timer.stop();
+        else
+            timer.start();
     }
 
 }

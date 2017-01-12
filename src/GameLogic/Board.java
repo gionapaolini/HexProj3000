@@ -82,11 +82,7 @@ public class Board {
     }
 
     public void putStone(int x, int y, StatusCell color){
-        if(grid[y][x].getStatus()== StatusCell.Empty){
-            grid[y][x].setStatus(color);
-        }else {
-            System.out.println("Not available!");
-        }
+        grid[y][x].setStatus(color);
     }
 
     public boolean hasWon(StatusCell color){
