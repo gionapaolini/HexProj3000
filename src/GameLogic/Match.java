@@ -72,7 +72,6 @@ public class Match {
 
             }
         });
-        timer.start();
 
     }
 
@@ -106,6 +105,12 @@ public class Match {
 
             players[currentPlayer].makeMove(0,0);
         }
+
+        System.out.println(players[0].getColor());
+        System.out.println(players[1].getColor());
+
+        timer.start();
+
         notifyObserver();
 
 

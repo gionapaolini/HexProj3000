@@ -10,16 +10,12 @@ import javax.swing.*;
 public class MenuTest {
     public static void main(String[] args){
 
-        JFrame frame = new JFrame();
-        MenuGUI menuGUI = new MenuGUI();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(menuGUI);
-        frame.pack();
-        frame.setLocationRelativeTo(null);
+
+        MenuGUI menuGUI = new MenuGUI(null, null);
 
 
 
-        frame.setVisible(true);
+
 
     }
 }

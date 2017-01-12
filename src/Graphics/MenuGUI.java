@@ -1,4 +1,7 @@
 package Graphics;
+import EnumVariables.BotType;
+import EnumVariables.GameType;
+import EnumVariables.StatusCell;
 import GameLogic.Match;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
@@ -22,11 +25,15 @@ public class MenuGUI extends JPanel {
     private final JLabel botTypeLabel = new JLabel("Type: ");
     private final JLabel maxTimeLabel = new JLabel("Max-time per move: ");
     private final JLabel maxDepthTreeLabel = new JLabel("Max depth-level tree : ");
+    private final JLabel boardSizeLabel = new JLabel("Board size: ");
 
     private final JTextField blueMaxTime = new JTextField();
     private final JTextField redMaxTime = new JTextField();
     private final JTextField blueDepthTree = new JTextField();
     private final JTextField redDepthTree = new JTextField();
+    private final JTextField sizeBoard = new JTextField();
+
+
 
 
     private final String[] gameTypeEntries = {"Human vs Human", "Human vs Bot", "Bot vs Bot"};
@@ -42,9 +49,11 @@ public class MenuGUI extends JPanel {
     private final JButton blueButton = new JButton("BlueBot Settings");
     private final JButton startButton = new JButton("Start");
 
-    public MenuGUI(){
-        frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    private UserInterface userInterface;
+
+    public MenuGUI(JFrame frame, UserInterface userInterface){
+        this.frame = frame;
+        this.userInterface = userInterface;
         blueDepthTree.setText("1000");
         redDepthTree.setText("1000");
         blueMaxTime.setText("1000");
@@ -54,6 +63,8 @@ public class MenuGUI extends JPanel {
 
         this.setLayout(new MigLayout("","center"));
         this.add(title, "span");
+        this.add(boardSizeLabel);
+        this.add(sizeBoard,"wrap, grow");
         this.add(swapRuleLabel);
         this.add(swaprule, "wrap");
         this.add(gameModeLabel);
@@ -61,7 +72,7 @@ public class MenuGUI extends JPanel {
         this.add(learningLabel);
         this.add(learningMode,"wrap");
         this.add(startButton,"span");
-        frame.setVisible(true);
+
 
     }
 
@@ -121,6 +132,7 @@ public class MenuGUI extends JPanel {
     }
     public void addStartButton(){
         this.add(startButton,"span");
+        frame.pack();
 
         this.validate();
         this.repaint();
@@ -228,14 +240,87 @@ public class MenuGUI extends JPanel {
                 }
             }
         });
+
+        startButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                userInterface.openGame();
+            }
+        });
     }
 
     public Match getMatch(){
-        /*
-        if(gameType.getSelectedItem().equals("Human vs Human"))
-            "Human vs Human", "Human vs Bot", "Bot vs Bot"};
-            */
-        return null;
+        Match match;
+
+        int size = Integer.parseInt(sizeBoard.getText());
+        boolean swapruleBool =false;
+
+        if(swaprule.isSelected())
+            swapruleBool = true;
+
+
+
+        if(gameType.getSelectedItem().equals("Human vs Human")){
+
+            match = new Match(size,GameType.Multiplayer,swapruleBool);
+
+        }else if(gameType.getSelectedItem().equals("Human vs Bot")){
+            StatusCell bot1col;
+            BotType bot1Type;
+            if(colorType.getSelectedItem().equals("Red")) {
+                bot1col = StatusCell.Blue;
+
+                if(botTypeBlue.getSelectedItem().equals("PathFinding")){
+                    bot1Type = BotType.PathFinding;
+                }else if(botTypeBlue.getSelectedItem().equals("MCTS")) {
+                    bot1Type = BotType.MCTS;
+                }else {
+                    bot1Type = BotType.AlphaBeta;
+                }
+
+
+            }else{
+                bot1col=StatusCell.Red;
+
+                if(botTypeRed.getSelectedItem().equals("PathFinding")){
+                    bot1Type = BotType.PathFinding;
+                }else if(botTypeRed.getSelectedItem().equals("MCTS")) {
+                    bot1Type = BotType.MCTS;
+                }else {
+                    bot1Type = BotType.AlphaBeta;
+                }
+
+            }
+
+            match = new Match(size,GameType.HumanVsBot,swapruleBool, bot1col, bot1Type);
+        }else {
+            BotType botBlueType;
+            BotType botRedType;
+
+            if(botTypeBlue.getSelectedItem().equals("PathFinding")){
+                botBlueType = BotType.PathFinding;
+            }else if(botTypeBlue.getSelectedItem().equals("MCTS")) {
+                botBlueType = BotType.MCTS;
+            }else {
+                botBlueType = BotType.AlphaBeta;
+            }
+
+            if(botTypeRed.getSelectedItem().equals("PathFinding")){
+                botRedType = BotType.PathFinding;
+            }else if(botTypeRed.getSelectedItem().equals("MCTS")) {
+                botRedType = BotType.MCTS;
+            }else {
+                botRedType = BotType.AlphaBeta;
+            }
+
+            match = new Match(size,GameType.BotFight,swapruleBool,StatusCell.Blue,StatusCell.Red,botBlueType,botRedType);
+
+
+        }
+
+        return match;
+
+
     }
 
 

@@ -21,7 +21,7 @@ public class ControlPanel extends JPanel {
     private final JButton undoButton = new JButton("Undo");
     private final JButton loadButton = new JButton("Load");
     private final JButton saveButton = new JButton("Save");
-    private final JButton analisysButton = new JButton("Open Analisys window");
+    private final JButton analisysButton = new JButton("Open Analysis window");
     private final JButton backButton = new JButton("Back to menu");
     private Match match;
     private UserInterface userInterface;

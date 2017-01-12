@@ -23,7 +23,7 @@ public class BoardGraphics extends JPanel implements Observer{
     private Color color;
     private boolean current, canSwap;
     private float distanceXY;
-    private float proportion = 4;
+    private float proportion = 2;
     private int x,y;
     public BoardGraphics(Match match){
         grid = match.getBoard().getGrid();

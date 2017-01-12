@@ -12,7 +12,7 @@ import java.awt.event.ActionListener;
 /**
  * Created by giogio on 1/11/17.
  */
-public class GameGui implements Observer{
+public class GameGui extends JPanel implements Observer{
     JFrame mainFrame;
     ControlPanel controlPanel;
     HistoryPanel historyPanel;
@@ -22,10 +22,9 @@ public class GameGui implements Observer{
 
 
 
-    public GameGui(BoardGraphics graphics, Match match, UserInterface userInterface){
-        mainFrame = new JFrame();
-        mainFrame.setLayout(new MigLayout());
-        mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    public GameGui(BoardGraphics graphics, Match match, UserInterface userInterface,JFrame frame){
+        mainFrame = frame;
+        setLayout(new MigLayout());
         openHistory = new JButton("<html><center>H<br>i<br>s<br>t<br>o<br>r<br>y</center></html>");
         openHistory.setSize(new Dimension(5,400));
         openHistory.setPreferredSize(new Dimension(5,400));
@@ -33,12 +32,9 @@ public class GameGui implements Observer{
         this.graphics = graphics;
         controlPanel = new ControlPanel(match,userInterface);
         historyPanel = new HistoryPanel(this);
-        mainFrame.add(controlPanel);
-        mainFrame.add(graphics);
-        mainFrame.add(historyPanel);
-
-        mainFrame.pack();
-        mainFrame.setVisible(true);
+        add(controlPanel);
+        add(graphics);
+        add(historyPanel);
         match.addObserver(this);
 
         openHistory.addActionListener(new ActionListener() {
@@ -49,16 +45,18 @@ public class GameGui implements Observer{
         });
 
 
+
+
     }
 
     public void openHistoryPanel(){
-        mainFrame.remove(openHistory);
-        mainFrame.add(historyPanel);
+        remove(openHistory);
+        add(historyPanel);
         mainFrame.pack();
     }
     public void closeHistoryPanel(){
-        mainFrame.remove(historyPanel);
-        mainFrame.add(openHistory);
+        remove(historyPanel);
+        add(openHistory);
         mainFrame.pack();
     }
 
