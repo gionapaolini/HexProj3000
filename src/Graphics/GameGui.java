@@ -22,7 +22,7 @@ public class GameGui implements Observer{
 
 
 
-    public GameGui(BoardGraphics graphics, Match match){
+    public GameGui(BoardGraphics graphics, Match match, UserInterface userInterface){
         mainFrame = new JFrame();
         mainFrame.setLayout(new MigLayout());
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -31,7 +31,7 @@ public class GameGui implements Observer{
         openHistory.setPreferredSize(new Dimension(5,400));
         this.match = match;
         this.graphics = graphics;
-        controlPanel = new ControlPanel(match);
+        controlPanel = new ControlPanel(match,userInterface);
         historyPanel = new HistoryPanel(this);
         mainFrame.add(controlPanel);
         mainFrame.add(graphics);

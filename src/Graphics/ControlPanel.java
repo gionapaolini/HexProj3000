@@ -24,8 +24,9 @@ public class ControlPanel extends JPanel {
     private final JButton analisysButton = new JButton("Open Analisys window");
     private final JButton backButton = new JButton("Back to menu");
     private Match match;
+    private UserInterface userInterface;
 
-    public ControlPanel(Match match){
+    public ControlPanel(Match match, UserInterface userInterface){
         setSize(new Dimension(200,400));
         setPreferredSize(new Dimension(200,400));
         setBackground(Color.GREEN);
@@ -39,6 +40,7 @@ public class ControlPanel extends JPanel {
         add(analisysButton,"span");
         add(backButton,"span");
         this.match = match;
+        this.userInterface = userInterface;
         setActionsButton();
 
     }
@@ -72,6 +74,13 @@ public class ControlPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 match.pause();
+            }
+        });
+
+        backButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                userInterface.goToSetting();
             }
         });
     }

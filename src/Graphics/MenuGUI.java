@@ -1,6 +1,8 @@
 package Graphics;
+import GameLogic.Match;
 import net.miginfocom.swing.MigLayout;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -40,11 +42,9 @@ public class MenuGUI extends JPanel {
     private final JButton blueButton = new JButton("BlueBot Settings");
     private final JButton startButton = new JButton("Start");
 
-    public MenuGUI(JFrame frame){
-        this.frame = frame;
-
-
-
+    public MenuGUI(){
+        frame = new JFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         blueDepthTree.setText("1000");
         redDepthTree.setText("1000");
         blueMaxTime.setText("1000");
@@ -61,6 +61,7 @@ public class MenuGUI extends JPanel {
         this.add(learningLabel);
         this.add(learningMode,"wrap");
         this.add(startButton,"span");
+        frame.setVisible(true);
 
     }
 
@@ -227,6 +228,14 @@ public class MenuGUI extends JPanel {
                 }
             }
         });
+    }
+
+    public Match getMatch(){
+        /*
+        if(gameType.getSelectedItem().equals("Human vs Human"))
+            "Human vs Human", "Human vs Bot", "Bot vs Bot"};
+            */
+        return null;
     }
 
 

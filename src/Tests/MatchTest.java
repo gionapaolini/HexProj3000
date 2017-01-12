@@ -16,6 +16,6 @@ public class MatchTest {
         Match match = new Match(8, GameType.Multiplayer,true, StatusCell.Red, BotType.MCTS);
         BoardGraphics panel = new BoardGraphics(match);
         match.startMatch();
-        GameGui gameGui = new GameGui(panel,match);
+        GameGui gameGui = new GameGui(panel,match, null);
     }
 }
