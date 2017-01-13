@@ -31,6 +31,7 @@ public class Match {
     private History history;
     private TimeGame timeGame;
     private Timer timer;
+    private int maxTimeRed,maxTimeBlue,depthLvlRed,depthlvlBlue;
 
     public Match(int boardSize, GameType gameType, boolean swapRule) {
         this.boardSize = boardSize;
@@ -46,6 +47,18 @@ public class Match {
         this.bot1Type = botType;
         initialize();
     }
+
+    public Match(int boardSize, GameType gameType, boolean swapRule, StatusCell botColor, BotType botType,int maxTimeBlue, int depthlvlBlue) {
+        this.boardSize = boardSize;
+        this.gameType = gameType;
+        this.swapRule = swapRule;
+        this.bot1Color = botColor;
+        this.bot1Type = botType;
+        this.maxTimeBlue = maxTimeBlue;
+        this.depthlvlBlue = depthlvlBlue;
+        initialize();
+    }
+
     public Match(int boardSize, GameType gameType, boolean swapRule, StatusCell botColor1, StatusCell botColor2, BotType bot1Type, BotType bot2Type) {
         this.boardSize = boardSize;
         this.gameType = gameType;
@@ -54,6 +67,21 @@ public class Match {
         this.bot2Color = botColor2;
         this.bot1Type = bot1Type;
         this.bot2Type = bot2Type;
+        initialize();
+
+    }
+    public Match(int boardSize, GameType gameType, boolean swapRule, StatusCell botColor1, StatusCell botColor2, BotType bot1Type, BotType bot2Type,int maxTimeBlue,int maxTimeRed, int depthlvlBlue, int depthLvlRed) {
+        this.boardSize = boardSize;
+        this.gameType = gameType;
+        this.swapRule = swapRule;
+        this.bot1Color = botColor1;
+        this.bot2Color = botColor2;
+        this.bot1Type = bot1Type;
+        this.bot2Type = bot2Type;
+        this.maxTimeBlue = maxTimeBlue;
+        this.depthlvlBlue = depthlvlBlue;
+        this.maxTimeRed = maxTimeRed;
+        this.depthLvlRed = depthLvlRed;
         initialize();
 
     }
@@ -84,19 +112,35 @@ public class Match {
         }else if(gameType == GameType.HumanVsBot){
             if(bot1Color == StatusCell.Blue){
                 players[0] = new Human(StatusCell.Red, this);
-                players[1] = new Bot(bot1Type, bot1Color, this);
+                if(bot1Type==BotType.PathFinding)
+                    players[1] = new Bot(bot1Type, bot1Color, this);
+                else
+                    players[1] = new Bot(bot1Type, bot1Color, this, maxTimeBlue,depthlvlBlue);
+
                 botTurn = true;
                 currentPlayer = 1;
                 players[currentPlayer].makeMove(0,0);
             }else {
                 players[0] = new Human(StatusCell.Blue, this);
-                players[1] = new Bot(bot1Type, bot1Color, this);
+                if(bot1Type==BotType.PathFinding)
+                    players[1] = new Bot(bot1Type, bot1Color, this);
+                else
+                    players[1] = new Bot(bot1Type, bot1Color, this, maxTimeBlue,depthlvlBlue);
                 currentPlayer = 0;
             }
 
         }else {
-            players[0] = new Bot(bot1Type, bot1Color, this);
-            players[1] = new Bot(bot2Type, bot2Color, this);
+            System.out.println("Here");
+            System.out.println(maxTimeRed+" "+depthLvlRed);
+
+            if(bot1Type == BotType.PathFinding)
+                players[0] = new Bot(bot1Type, bot1Color, this);
+            else
+                players[0] = new Bot(bot1Type, bot1Color, this,maxTimeBlue,depthlvlBlue);
+            if(bot2Type == BotType.PathFinding)
+                players[1] = new Bot(bot2Type, bot2Color, this);
+            else
+                players[1] = new Bot(bot2Type, bot2Color, this,maxTimeRed,depthLvlRed);
             botTurn = true;
             if(bot1Color==StatusCell.Blue)
                 currentPlayer=0;
@@ -105,9 +149,6 @@ public class Match {
 
             players[currentPlayer].makeMove(0,0);
         }
-
-        System.out.println(players[0].getColor());
-        System.out.println(players[1].getColor());
 
         timer.start();
 

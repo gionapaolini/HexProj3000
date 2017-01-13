@@ -11,11 +11,19 @@ import java.util.Random;
  */
 public class Bot extends Player{
     private BotType type;
+    private int maxTime, depthlvl;
 
     public Bot(BotType type, StatusCell color, Match match){
         this.type = type;
         this.color = color;
         this.match = match;
+    }
+    public Bot(BotType type, StatusCell color, Match match, int maxTime, int depthlvl){
+        this.type = type;
+        this.color = color;
+        this.match = match;
+        this.maxTime = maxTime;
+        this.depthlvl = depthlvl;
     }
 
     @Override
@@ -34,5 +42,7 @@ public class Bot extends Player{
         int y = (int)(Math.random()*match.getBoard().getSize());
         match.setBotTurn(false);
         super.makeMove(x, y);
+
+        System.out.println(type+" with "+maxTime+" and "+depthlvl);
     }
 }

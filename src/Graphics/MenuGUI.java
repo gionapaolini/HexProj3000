@@ -291,8 +291,23 @@ public class MenuGUI extends JPanel {
                 }
 
             }
+            if(bot1Type==BotType.PathFinding)
+                match = new Match(size,GameType.HumanVsBot,swapruleBool, bot1col, bot1Type);
+            else {
+                int maxTime;
+                int maxDepth;
+                if(bot1col == StatusCell.Blue) {
+                    maxTime = Integer.parseInt(blueMaxTime.getText());
+                    maxDepth = Integer.parseInt(blueDepthTree.getText());
+                }else {
+                    maxTime = Integer.parseInt(redMaxTime.getText());
+                    maxDepth = Integer.parseInt(redDepthTree.getText());
+                }
 
-            match = new Match(size,GameType.HumanVsBot,swapruleBool, bot1col, bot1Type);
+                match = new Match(size,GameType.HumanVsBot,swapruleBool, bot1col, bot1Type,maxTime,maxDepth);
+
+            }
+
         }else {
             BotType botBlueType;
             BotType botRedType;
@@ -312,8 +327,15 @@ public class MenuGUI extends JPanel {
             }else {
                 botRedType = BotType.AlphaBeta;
             }
+            int maxTimeBlue = Integer.parseInt(blueMaxTime.getText());
+            int maxDepthBlue = Integer.parseInt(blueDepthTree.getText());
+            int maxTimeRed = Integer.parseInt(redMaxTime.getText());
+            int maxDepthRed = Integer.parseInt(redDepthTree.getText());
+            System.out.println(maxTimeBlue+" "+maxTimeRed);
 
-            match = new Match(size,GameType.BotFight,swapruleBool,StatusCell.Blue,StatusCell.Red,botBlueType,botRedType);
+            System.out.println(maxDepthBlue+" "+maxDepthRed);
+
+            match = new Match(size,GameType.BotFight,swapruleBool,StatusCell.Blue,StatusCell.Red,botBlueType,botRedType,maxTimeBlue,maxTimeRed,maxDepthBlue,maxDepthRed);
 
 
         }
