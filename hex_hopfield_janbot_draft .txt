@@ -1,0 +1,139 @@
+Hopfield evaluation:
+Input: 	Board, n*n matrix with values ranging {0,1,2}
+		Hopfieldnetwork, n*n*7 nodes, n*n*7*(n*n*7-1)/2 edges	<- either trained or genetically encoded
+Output: either a strategie or a selected node.
+
+Hopfield training:
+Input: boardsize n, patterns with high entropy (i.e. find board states, with winning chance 50,51 and 49),
+						store flow map of those patterns.
+			
+	
+		
+		
+		
+		
+		
+		
+		
+Strategie:
+During the playout certain moves are prefered
+{x,y} = strategySelection(pmf,random[0,1]);
+
+
+Standart:
+	output: f_XY(x,y) = Uniform(x,y);
+
+Distance_Default:
+	output: Probability mass function f
+	
+	preference of :
+		distance 3 of enemy pieces in enemy wall direction
+		distance 2 of friendly pieces all direction
+		distance 1 of friendly pieces in winning wall direction
+	Algorithm Principle:
+		Mark those nodes as zero and then dijkstra the map.
+	
+Distance_General:	
+	output: Probability mass function f
+	input: maximum is 6 directions * (2*n) distances * 2 players
+	
+	preference of :
+		distance y of player p pieces in direction x, for y={1,...,2*n},p={1,2},x={1,6}
+	Algorithm Principle:
+		Mark those nodes as zero and then dijkstra the map.
+		
+		
+strategySelection:
+input: probabilityMassFunction=0 for x,y outside Range , randomNumber = {0,1}
+output: Tilecoordinate: x,y 
+
+
+JanStrategyBot:
+	Reference: 	https://www.researchgate.net/publication/280064942_Where_Does_Coevolution_Lead_to
+				https://www.researchgate.net/publication/2527551_The_GENITOR_Algorithm_and_Selection_Pressure_Why_Rank-Based_Allocation_of_Reproductive_Trials_is_Best?el=1_x_8&enrichId=rgreq-2f74d2cb4044bb212bfc3fc9fa9ae301-XXX&enrichSource=Y292ZXJQYWdlOzI4MDA2NDk0MjtBUzoyODIyMDM1NTM1ODMxMDlAMTQ0NDI5Mzk3ODk3NQ==
+	Let Jan bots, with different distance strategies play against each other and output the best input function.
+	Genotype: 6 directions * (2*n) distances * 2 players Times doubles[0,..,1]
+	Phenotype: strategy
+	
+	Algorithm:
+	Input: populationsize, i.e. 50
+	Output: a good attack strategy and a good defence strategy.
+	
+	//createInitialPopulation
+	DO populationsize Times
+		DO Genotypesize Times ind1.GENOME.concat(ind1.GENOME,Random.Double);
+		DO Genotypesize Times ind2.GENOME.concat(ind2.GENOME,Random.Double);
+		pop1.add(ind1)
+		pop2.add(ind2)
+	ENDO
+	
+	//evaluateInitialPopulation
+	FOR EVERY ind IN pop1
+		DO 10 Times
+			ind1 := SELECTUNIFORM(pop1)
+			payoff := ENCOUNTER(ind1,ind2)
+			UPDATE-HISTORY-AND-FITNESS(ind2,payoff)
+			UPDATE-HISTORY-AND-FITNESS(ind1,-payoff)
+		ENDO
+	END FOR
+	
+	FOR EVERY ind IN pop2
+		DO 10 Times
+			ind2 := SELECTUNIFORM(pop1)
+			payoff := ENCOUNTER(ind2,ind)
+			UPDATE-HISTORY-AND-FITNESS(ind2,payoff)
+			UPDATE-HISTORY-AND-FITNESS(ind1,-payoff)
+		ENDO
+	END FOR
+	
+	//Sort population by fitness
+	SORT(pop1) 
+	SORT(pop2)
+	
+	//mainLoop
+	WHILE(t<terminationTime)
+		DO 20 TIMES
+			ind1 := SELECT(pop1)
+			ind2 := SELECT(pop2)
+			payoff := ENCOUNTER(ind1,ind2)
+			UPDATE-HISTORY-AND-FITNESS(ind1,payoff)
+			UPDATE-HISTORY-AND-FITNESS(ind2,-payoff)
+		ENDDO
+	
+		
+		p1 := SELECT(pop1) //pop1 parent1
+		p2 := SELECT(pop1) //pop1 parent2
+		child := MUTATE-CROSSOVER(p1,p2)
+		f := FITNESS(child,pop2)
+		INSERT(child,f,pop1)
+		p1 := SELECT(pop2) ; pop2 parent1
+		p2 := SELECT(pop2) ; pop2 parent2
+		child := MUTATE-CROSSOVER(p1,p2)
+		f := FITNESS(child)
+		INSERT(child,f,pop2)
+		
+	DO
+	return BEST(pop1,pop2)
+	
+	
+	___
+	SELECT(population)
+		bias = 1.5; 
+		index = population.size * (bias - sqrt (bias * bias - 4.0 (bias -1) * random())) / 2.0 / (bias -1);
+		return ((int)index); 
+	
+	___
+	FITNESS(ind1)
+		ind2 := SELECT(pop2)
+		payoff := ENCOUNTER(ind1,ind2)
+		UPDATE-HISTORY-AND-FITNESS(ind1,payoff)
+		UPDATE-HISTORY-AND-FITNESS(ind2,-payoff))
+			
+	
+	TODO:	Define: Mutate-crossover
+					INSERT
+					ENCOUNTER (times of games wich are played)
+					Enhancestragy with a base pattern
+			
+	
+		
