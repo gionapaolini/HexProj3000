@@ -2,16 +2,36 @@ package GameLogic;
 
 import EnumVariables.StatusCell;
 
+import java.util.ArrayList;
+
 /**
  * Created by giogio on 12/26/16.
  */
 public class Board {
     private int size;
     private Cell[][] grid;
+    private ArrayList<Move> freeMoves;
     public Board(int size){
         this.size = size;
         initializeGrid();
     }
+
+    public ArrayList<Move> getFreeMoves(){
+        if(freeMoves==null)
+            setFreeMoves();
+        return freeMoves;
+    }
+
+    private void setFreeMoves(){
+        freeMoves = new ArrayList<>();
+        for (int i=0;i<size;i++){
+            for (int j=0;j<size;j++){
+                if(grid[i][j].getStatus()==StatusCell.Empty)
+                    freeMoves.add(new Move(j,i));
+            }
+        }
+    }
+
 
     private void initializeGrid(){
         //create an empty grid of cells
@@ -83,6 +103,7 @@ public class Board {
 
     public void putStone(int x, int y, StatusCell color){
         grid[y][x].setStatus(color);
+        setFreeMoves();
     }
 
     public boolean hasWon(StatusCell color){
@@ -102,6 +123,19 @@ public class Board {
             }
         }
         return false;
+    }
+
+    public Board getCopy(){
+        Board copy = new Board(size);
+        for (int i=0;i<size;i++){
+            for (int j=0;j<size;j++){
+                if(grid[i][j].getStatus()==StatusCell.Blue)
+                    copy.putStone(j,i,StatusCell.Blue);
+                else if(grid[i][j].getStatus()==StatusCell.Red)
+                    copy.putStone(j,i,StatusCell.Red);
+            }
+        }
+        return copy;
     }
 
 }

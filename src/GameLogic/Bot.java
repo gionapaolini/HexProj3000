@@ -1,10 +1,9 @@
 package GameLogic;
 
+import BotAlgorithms.MCTS.MCTS;
+import BotAlgorithms.Strategy;
 import EnumVariables.BotType;
-import EnumVariables.GameType;
 import EnumVariables.StatusCell;
-
-import java.util.Random;
 
 /**
  * Created by giogio on 1/11/17.
@@ -12,11 +11,13 @@ import java.util.Random;
 public class Bot extends Player{
     private BotType type;
     private int maxTime, depthlvl;
+    private Strategy strategy;
 
     public Bot(BotType type, StatusCell color, Match match){
         this.type = type;
         this.color = color;
         this.match = match;
+
     }
     public Bot(BotType type, StatusCell color, Match match, int maxTime, int depthlvl){
         this.type = type;
@@ -24,6 +25,10 @@ public class Bot extends Player{
         this.match = match;
         this.maxTime = maxTime;
         this.depthlvl = depthlvl;
+        if(type == BotType.MCTS)
+            strategy = new MCTS(match.getBoard(),color,maxTime,depthlvl);
+
+
     }
 
     @Override
@@ -33,15 +38,11 @@ public class Bot extends Player{
     }
 
     private void makeMoveThread(){
-        try {
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        int x = (int)(Math.random()*match.getBoard().getSize());
-        int y = (int)(Math.random()*match.getBoard().getSize());
+
+        Move move = strategy.getMove();
+
         match.setBotTurn(false);
-        super.makeMove(x, y);
+        super.makeMove(move.getX(), move.getY());
 
         System.out.println(type+" with "+maxTime+" and "+depthlvl);
     }

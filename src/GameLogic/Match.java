@@ -243,6 +243,9 @@ public class Match {
             timer.stop();
         else
             timer.start();
+        if(players[currentPlayer] instanceof Bot){
+            players[currentPlayer].makeMove(0,0);
+        }
     }
 
     public void loadHistory(History history){
