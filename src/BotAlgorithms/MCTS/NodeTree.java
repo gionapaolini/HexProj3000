@@ -95,5 +95,14 @@ public class NodeTree {
             winningState = true;
     }
 
+    public int getDepth(){
+        NodeTree dad = parent;
+        int count = 0;
+        while (dad!=null) {
+            count++;
+            dad = dad.parent;
+        }
+        return count;
+    }
 
 }

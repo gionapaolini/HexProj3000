@@ -16,6 +16,7 @@ public class MCTS implements Strategy {
     Board initialBoard;
     StatusCell color;
     StatusCell enemy;
+    int realCount = 0;
 
 
     public MCTS(Board board, StatusCell color, int maxTime, int depthLevel){
@@ -32,12 +33,14 @@ public class MCTS implements Strategy {
     public Move start(){
         NodeTree root = new NodeTree(enemy,initialBoard);
         int count = 0;
+
         double startTime = System.currentTimeMillis();
         while (System.currentTimeMillis()-startTime<=maxTime){
             expand(selection(root));
             count++;
         }
         System.out.println(count);
+        printTree(root);
         return selectBestMove(root);
     }
 
@@ -54,10 +57,15 @@ public class MCTS implements Strategy {
     }
     public NodeTree selection(NodeTree node){
 
-        if(node.getState().getFreeMoves().size()>0)
+        if(node.getState().getFreeMoves().size()>0) {
+            realCount++;
             return node;
+        }
+     //   System.out.println("Real "+realCount);
+        realCount = 0;
 
-        double score = -100000;
+
+        double score = -1000000;
         NodeTree result = node;
         for(NodeTree nodeChild: node.getChildrens()){
             double newScore = selectfn(nodeChild);
@@ -67,6 +75,24 @@ public class MCTS implements Strategy {
             }
         }
         return selection(result);
+    }
+
+    public void printTree(NodeTree root){
+        System.out.println("Root: "+root.getTotalGames());
+        printChild(root);
+
+
+    }
+    public void printChild(NodeTree leaf){
+        for(NodeTree nodeTree: leaf.getChildrens()) {
+            for (int i = 0; i < nodeTree.getDepth(); i++) {
+                System.out.print("-- ");
+            }
+            System.out.println(" WINS/TOTAL: "+nodeTree.getTotalWins()+"/"+nodeTree.getTotalGames());
+            if(nodeTree.getChildrens().size()>0){
+                printChild(nodeTree);
+            }
+        }
     }
 
     public void expand(NodeTree node){
@@ -105,6 +131,7 @@ public class MCTS implements Strategy {
         boolean exit=false;
         while (1==1){
             ArrayList<Move> freemoves = copy.getFreeMoves();
+            /*
             for(Move move: freemoves){
                 copy.putStone(move.getX(),move.getY(),startColor);
                 if(copy.hasWon(startColor)) {
@@ -122,6 +149,7 @@ public class MCTS implements Strategy {
 
             if(exit)
                 break;
+                */
 
             Move finalMove = freemoves.remove((int)(Math.random()*freemoves.size()));
             copy.putStone(finalMove.getX(),finalMove.getY(),startColor);
