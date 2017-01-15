@@ -106,6 +106,11 @@ public class Board {
         setFreeMoves();
     }
 
+    public void setEmpty(int x, int y){
+        grid[y][x].setStatus(StatusCell.Empty);
+        setFreeMoves();
+    }
+
     public boolean hasWon(StatusCell color){
         if(color == StatusCell.Red){
             for (int i=0;i<size;i++){
