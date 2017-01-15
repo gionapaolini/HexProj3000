@@ -296,14 +296,13 @@ public class Match {
     }
 
     public NodeTree getRootTreeMcts(){
+
         Bot bot;
-        if(players[0] instanceof Bot) {
-            bot = (Bot) players[0];
-            return bot.getRootTreeMcts();
-        }else {
-            bot = (Bot) players[1];
+        if(players[(currentPlayer+1)%2] instanceof Bot) {
+            bot = (Bot) players[(currentPlayer+1)%2];
             return bot.getRootTreeMcts();
         }
+        return null;
     }
 
 }

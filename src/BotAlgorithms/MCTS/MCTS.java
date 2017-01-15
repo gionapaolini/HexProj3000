@@ -64,6 +64,8 @@ public class MCTS implements Strategy {
 
         double score = -1000000;
         NodeTree result = node;
+
+
         for(NodeTree nodeChild: node.getChildrens()){
             double newScore = selectfn(nodeChild);
             if(newScore>score){
@@ -75,9 +77,9 @@ public class MCTS implements Strategy {
     }
 
     public void printTree(NodeTree root){
-        System.out.println("Root: "+root.getTotalGames());
-        printChild(root);
 
+        printChild(root);
+        System.out.println("Root: "+root.getTotalGames());
 
     }
     public void printChild(NodeTree leaf){
@@ -101,6 +103,7 @@ public class MCTS implements Strategy {
         }else {
             NodeTree child = new NodeTree(node);
             ArrayList<Move> freeMoves = node.getState().getFreeMoves();
+            //TODO selectionPolicyCouldGetRelevantHere
             child.setMove(freeMoves.remove((int)(Math.random()*freeMoves.size())));
             child.incrementGame();
             if(child.isWinningState()) {

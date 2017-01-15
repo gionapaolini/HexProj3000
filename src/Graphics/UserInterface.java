@@ -11,6 +11,10 @@ import javax.swing.*;
 public class UserInterface {
 
     MenuGUI menuGUI;
+
+
+
+
     GameGui gameGui;
     BoardGraphics graphics;
     JFrame mainFrame;
@@ -39,6 +43,10 @@ public class UserInterface {
         mainFrame.remove(gameGui);
         mainFrame.add(menuGUI);
         mainFrame.pack();
+    }
+
+    public GameGui getGameGui() {
+        return gameGui;
     }
 
     public static void main(String[] args){

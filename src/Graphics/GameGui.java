@@ -74,4 +74,10 @@ public class GameGui extends JPanel implements Observer{
 
     }
 
+
+    public Match getMatch() {
+        return match;
+    }
+
+
 }

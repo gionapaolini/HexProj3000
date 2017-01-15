@@ -3,13 +3,16 @@ package BotAlgorithms.MCTS;
 import EnumVariables.StatusCell;
 import GameLogic.Board;
 import GameLogic.Move;
+import hypertree.HTNode;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Enumeration;
 
 /**
  * Created by giogio on 1/13/17.
  */
-public class NodeTree {
+public class NodeTree implements HTNode {
     private Board state;
     private Move move;
     private StatusCell color;
@@ -105,4 +108,21 @@ public class NodeTree {
         return count;
     }
 
+    @Override
+    public Enumeration children() {
+        Enumeration c = Collections.enumeration(childrens);
+        return c;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        if (childrens.size()==0)return true;
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        if (move == null) return "root";
+        return move.toString();
+    }
 }

@@ -25,6 +25,7 @@ public class ControlPanel extends JPanel {
     private final JButton backButton = new JButton("Back to menu");
     private Match match;
     private UserInterface userInterface;
+    private Analysor analysor;
 
     public ControlPanel(Match match, UserInterface userInterface){
         setSize(new Dimension(200,400));
@@ -81,6 +82,18 @@ public class ControlPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 userInterface.goToSetting();
+            }
+        });
+
+
+
+        analisysButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (analysor == null) {
+                    analysor = new Analysor(userInterface);
+                }
+                analysor.setVisible(!analysor.isVisible());
             }
         });
     }
