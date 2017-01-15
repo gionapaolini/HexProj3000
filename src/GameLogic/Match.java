@@ -1,5 +1,6 @@
 package GameLogic;
 
+import BotAlgorithms.MCTS.NodeTree;
 import EnumVariables.BotType;
 import EnumVariables.GameType;
 import EnumVariables.StatusCell;
@@ -292,6 +293,17 @@ public class Match {
 
     public GameType getGameType(){
         return gameType;
+    }
+
+    public NodeTree getRootTreeMcts(){
+        Bot bot;
+        if(players[0] instanceof Bot) {
+            bot = (Bot) players[0];
+            return bot.getRootTreeMcts();
+        }else {
+            bot = (Bot) players[1];
+            return bot.getRootTreeMcts();
+        }
     }
 
 }

@@ -1,6 +1,7 @@
 package GameLogic;
 
 import BotAlgorithms.MCTS.MCTS;
+import BotAlgorithms.MCTS.NodeTree;
 import BotAlgorithms.Strategy;
 import EnumVariables.BotType;
 import EnumVariables.StatusCell;
@@ -45,5 +46,9 @@ public class Bot extends Player{
         super.makeMove(move.getX(), move.getY());
 
         System.out.println(type+" with "+maxTime+" and "+depthlvl);
+    }
+
+    public NodeTree getRootTreeMcts(){
+        return strategy.getRootTreeMcts();
     }
 }

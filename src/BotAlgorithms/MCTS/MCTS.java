@@ -16,8 +16,7 @@ public class MCTS implements Strategy {
     Board initialBoard;
     StatusCell color;
     StatusCell enemy;
-    int realCount = 0;
-
+    NodeTree root;
 
     public MCTS(Board board, StatusCell color, int maxTime, int depthLevel){
         this.maxTime = maxTime;
@@ -31,7 +30,7 @@ public class MCTS implements Strategy {
     }
 
     public Move start(){
-        NodeTree root = new NodeTree(enemy,initialBoard);
+        root = new NodeTree(enemy,initialBoard);
         int count = 0;
 
         double startTime = System.currentTimeMillis();
@@ -39,8 +38,9 @@ public class MCTS implements Strategy {
             expand(selection(root));
             count++;
         }
-        System.out.println(count);
         printTree(root);
+        System.out.println(count);
+
         return selectBestMove(root);
     }
 
@@ -57,12 +57,9 @@ public class MCTS implements Strategy {
     }
     public NodeTree selection(NodeTree node){
 
-        if(node.getState().getFreeMoves().size()>0) {
-            realCount++;
+        if(node.getState().getFreeMoves().size()>0)
             return node;
-        }
-     //   System.out.println("Real "+realCount);
-        realCount = 0;
+
 
 
         double score = -1000000;
@@ -97,7 +94,6 @@ public class MCTS implements Strategy {
 
     public void expand(NodeTree node){
         if(node.isWinningState()) {
-            System.out.println("YES -----------------------------------------------------------");
             if (node.getColor() == color)
                 node.incrementWins(10);
             else
@@ -108,7 +104,6 @@ public class MCTS implements Strategy {
             child.setMove(freeMoves.remove((int)(Math.random()*freeMoves.size())));
             child.incrementGame();
             if(child.isWinningState()) {
-                System.out.println("YES ============================================================");
                 if (child.getColor() == color)
                     child.incrementWins(10);
                 else
@@ -129,9 +124,35 @@ public class MCTS implements Strategy {
         else
             startColor = StatusCell.Blue;
         boolean exit=false;
-        while (1==1){
+
             ArrayList<Move> freemoves = copy.getFreeMoves();
-            /*
+            int size = freemoves.size();
+
+            for (int i=0;i<size/2;i++){
+                Move move = freemoves.remove((int)(Math.random()*freemoves.size()));
+                copy.putStone(move.getX(),move.getY(),startColor);
+            }
+
+            if(startColor == StatusCell.Blue)
+                startColor = StatusCell.Red;
+            else
+                startColor = StatusCell.Blue;
+
+            size = freemoves.size();
+            for (int i=0;i<size;i++){
+                Move move = freemoves.get(i);
+                copy.putStone(move.getX(),move.getY(),startColor);
+            }
+
+            if(copy.hasWon(color))
+                nodeTree.incrementWins(1);
+            else
+                nodeTree.incrementWins(-1);
+
+
+
+
+        /*
             for(Move move: freemoves){
                 copy.putStone(move.getX(),move.getY(),startColor);
                 if(copy.hasWon(startColor)) {
@@ -149,9 +170,9 @@ public class MCTS implements Strategy {
 
             if(exit)
                 break;
-                */
 
-            Move finalMove = freemoves.remove((int)(Math.random()*freemoves.size()));
+
+            Move finalMove =
             copy.putStone(finalMove.getX(),finalMove.getY(),startColor);
 
             if(copy.hasWon(color)) {
@@ -168,8 +189,8 @@ public class MCTS implements Strategy {
             else
                 startColor = StatusCell.Blue;
 
+            */
 
-        }
     }
 
     public double selectfn(NodeTree node){
@@ -185,4 +206,11 @@ public class MCTS implements Strategy {
     public Move getMove() {
         return start();
     }
+
+    @Override
+    public NodeTree getRootTreeMcts() {
+        return root;
+    }
+
+
 }
