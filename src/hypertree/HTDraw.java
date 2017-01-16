@@ -7,6 +7,8 @@
 
 package hypertree;
 
+import BotAlgorithms.MCTS.NodeTree;
+
 import java.awt.*;
 
 
@@ -104,12 +106,13 @@ class HTDraw {
 
     /**
      * Draws a branch between 2 screen points.
-     *
-     * @param zs1    the first point's screen coordinates
+     *  @param zs1    the first point's screen coordinates
      * @param zs2    the second point's screen coordinates
      * @param g      the graphic context
+     * @param node
+     * @param aChildnode
      */
-    void drawBranch(HTCoordS zs1, HTCoordS zs2, Graphics g) {
+    void drawBranch(HTCoordS zs1, HTCoordS zs2, Graphics g, NodeTree node, NodeTree aChildnode) {
         // TODO a ameliorer
         g.setColor(Color.black);
         g.drawLine(zs1.x, zs1.y, zs2.x, zs2.y);
@@ -117,12 +120,12 @@ class HTDraw {
     
     /**
      * Draws a node.
-     *
-     * @param zs    the coordinates of the center of the node
+     *  @param zs    the coordinates of the center of the node
      * @param coeff the radius reduction coefficient
      * @param g     the graphic context
+     * @param datenKnoten
      */
-    void drawNode(HTCoordS zs, double coeff, Graphics g) {
+    void drawNode(HTCoordS zs, double coeff, Graphics g, NodeTree datenKnoten) {
         // TODO a ameliorer        
         double minMax = Math.min(sMax.x, sMax.y);
         int radius = (int) Math.round(model.getRadius() * minMax * coeff);
@@ -131,6 +134,8 @@ class HTDraw {
         g.fillOval(zs.x - radius, zs.y - radius, 2 * radius, 2 * radius);
         g.setColor(Color.black);
         g.drawOval(zs.x - radius, zs.y - radius, 2 * radius, 2 * radius);
+
+        g.drawString(datenKnoten.getName(),zs.x - radius, zs.y - radius);
     }
 
 

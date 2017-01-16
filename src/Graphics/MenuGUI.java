@@ -31,13 +31,13 @@ public class MenuGUI extends JPanel {
     private final JTextField redMaxTime = new JTextField();
     private final JTextField blueDepthTree = new JTextField();
     private final JTextField redDepthTree = new JTextField();
-    private final JTextField sizeBoard = new JTextField();
+    private final JTextField sizeBoard = new JTextField("10");
 
 
 
 
     private final String[] gameTypeEntries = {"Human vs Human", "Human vs Bot", "Bot vs Bot"};
-    private final String[] botTypeEntries = {"PathFinding", "MCTS", "A-B Pruning"};
+    private final String[] botTypeEntries = {"MCTS","PathFinding",  "A-B Pruning"};
     private final String[] colorEntries = {"Red","Blue"};
 
     private final JComboBox<String>  gameType = new JComboBox<>(gameTypeEntries);

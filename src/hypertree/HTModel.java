@@ -8,14 +8,23 @@
 package hypertree;
 
 
+import BotAlgorithms.MCTS.NodeTree;
+
+import javax.swing.tree.TreeNode;
+
 /**
  * The HTModel class implements the model for the HyperTree.
  */
 class HTModel {
 
-    private HTModelNode root   = null; // the root of the tree's model 
+    public NodeTree getRootNode() {
+        return rootNode;
+    }
 
-    private double      lenght = 0.4;  // distance between node and children
+    private NodeTree rootNode;
+    private HTModelNode root   = null; // the root of the tree's model
+
+    private double      lenght = 0.95;  // distance between node and children
     private double      radius = 0.04; // radius of a node
 
 
@@ -27,6 +36,7 @@ class HTModel {
      * @param root    the root of the real tree 
      */
     HTModel(HTNode root) {
+        rootNode = (NodeTree)root;
         if (root.isLeaf()) {
             this.root = new HTModelNode(root, this);
         } else {

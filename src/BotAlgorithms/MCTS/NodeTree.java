@@ -5,9 +5,7 @@ import GameLogic.Board;
 import GameLogic.Move;
 import hypertree.HTNode;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Enumeration;
+import java.util.*;
 
 /**
  * Created by giogio on 1/13/17.
@@ -26,6 +24,24 @@ public class NodeTree implements HTNode {
         this.color = color;
         this.state = state;
         childrens = new ArrayList<>();
+    }
+
+    public  ArrayList<NodeTree> breadthFirst(){
+        ArrayList<NodeTree> bfsearch = new ArrayList<>(totalGames);
+        Queue<NodeTree> quey = new LinkedList<NodeTree>();
+
+        quey.add(this);
+        while (!quey.isEmpty()){
+            NodeTree n = quey.remove();
+            bfsearch.add(n);
+            for (int i = 0; i < n.childrens.size(); i++) {
+                quey.add(n.childrens.get(i));
+            }
+
+        }
+
+        return bfsearch;
+
     }
 
 
@@ -129,5 +145,19 @@ public class NodeTree implements HTNode {
 
     public void setParent(NodeTree parent){
         this.parent = parent;
+    }
+
+    public int getHeight(){
+        if (isLeaf()) return 0;
+        int maxHeight = -1;
+        for (int i = 0; i < childrens.size(); i++) {
+            int childHeight = childrens.get(i).getHeight();
+            if (childHeight>maxHeight) maxHeight = childHeight;
+        }
+
+        maxHeight+=1;
+        return maxHeight;
+
+
     }
 }

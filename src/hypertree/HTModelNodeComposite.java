@@ -124,8 +124,10 @@ class HTModelNodeComposite
      * put the children at the right angle.
      */
    void layout(double angle, double width) {
-        super.layout(angle, width);   
-
+        super.layout(angle, width);
+       System.out.println("withd" + width);
+       width = Math.PI * 1 /4;
+       System.out.println("withd" + width);
         HTModelNode child = null;
 
         // Only the root node could have a width > PI
@@ -143,6 +145,7 @@ class HTModelNodeComposite
             double childWidth = width * percent;
             double childAngle = startAngle + (childWidth / 2);
             child.layout(childAngle, childWidth);
+            //child.layout(childAngle, 0);
             startAngle += childWidth;
         }
     }
