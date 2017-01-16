@@ -143,4 +143,15 @@ public class Board {
         return copy;
     }
 
+    public boolean isEqual(Board board){
+        for (int i=0;i<size;i++){
+            for (int j=0;j<size;j++){
+                if(grid[i][j].getStatus()!=board.getGrid()[i][j].getStatus())
+                    return true;
+            }
+        }
+
+        return false;
+    }
+
 }

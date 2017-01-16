@@ -28,6 +28,7 @@ public class NodeTree implements HTNode {
         childrens = new ArrayList<>();
     }
 
+
     public NodeTree(NodeTree parent){
         this.parent = parent;
         parent.addChildren(this);
@@ -124,5 +125,9 @@ public class NodeTree implements HTNode {
     public String getName() {
         if (move == null) return "root";
         return move.toString();
+    }
+
+    public void setParent(NodeTree parent){
+        this.parent = parent;
     }
 }

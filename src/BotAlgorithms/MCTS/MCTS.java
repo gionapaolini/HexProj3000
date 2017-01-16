@@ -17,6 +17,8 @@ public class MCTS implements Strategy {
     StatusCell color;
     StatusCell enemy;
     NodeTree root;
+    NodeTree lastNode;
+    final double a = 0.85;
 
     public MCTS(Board board, StatusCell color, int maxTime, int depthLevel){
         this.maxTime = maxTime;
@@ -30,7 +32,11 @@ public class MCTS implements Strategy {
     }
 
     public Move start(){
-        root = new NodeTree(enemy,initialBoard);
+        if(root ==null)
+            root = new NodeTree(enemy,initialBoard);
+        else
+            setNewRoot();
+
         int count = 0;
 
         double startTime = System.currentTimeMillis();
@@ -40,17 +46,31 @@ public class MCTS implements Strategy {
         }
         printTree(root);
         System.out.println(count);
-
-        return selectBestMove(root);
+        NodeTree node = selectBestMoveNode(root);
+        lastNode = node;
+        return node.getMove();
     }
 
-    private Move selectBestMove(NodeTree root){
+    public void setNewRoot(){
+        Board copy = lastNode.getState().getCopy();
+        for(NodeTree nodeTree: lastNode.getChildrens()){
+            copy.putStone(nodeTree.getMove().getX(),nodeTree.getMove().getY(), enemy);
+            if(copy.isEqual(initialBoard)){
+                root = nodeTree;
+                return;
+            }
+            copy.setEmpty(nodeTree.getMove().getX(),nodeTree.getMove().getY());
+        }
+        root = new NodeTree(enemy,initialBoard);
+    }
+
+    private NodeTree selectBestMoveNode(NodeTree root){
         int nWins=root.getChildrens().get(0).getTotalWins();
-        Move bestMove = root.getChildrens().get(0).getMove();
+        NodeTree bestMove = root.getChildrens().get(0);
         for(NodeTree nodeTree: root.getChildrens()){
             if(nodeTree.getTotalWins()>nWins){
                 nWins = nodeTree.getTotalWins();
-                bestMove = nodeTree.getMove();
+                bestMove = nodeTree;
             }
         }
         return bestMove;
@@ -103,7 +123,6 @@ public class MCTS implements Strategy {
         }else {
             NodeTree child = new NodeTree(node);
             ArrayList<Move> freeMoves = node.getState().getFreeMoves();
-            //TODO selectionPolicyCouldGetRelevantHere
             child.setMove(freeMoves.remove((int)(Math.random()*freeMoves.size())));
             child.incrementGame();
             if(child.isWinningState()) {
@@ -197,10 +216,12 @@ public class MCTS implements Strategy {
     }
 
     public double selectfn(NodeTree node){
-        int vi = node.getTotalWins();
+        float vi = node.getTotalWins()/node.getTotalGames();
         int np = node.getTotalGames();
         int ni = node.getParent().getTotalGames();
         double C = Math.sqrt(2);
+        if(vi>a)
+            C = 0;
         return vi + C * Math.sqrt(Math.log(np)/ni);
     }
 
