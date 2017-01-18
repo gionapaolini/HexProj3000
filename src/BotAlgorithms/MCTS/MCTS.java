@@ -1,5 +1,6 @@
 package BotAlgorithms.MCTS;
 
+import BotAlgorithms.ExtensionStrategy;
 import BotAlgorithms.Strategy;
 import EnumVariables.StatusCell;
 import GameLogic.Board;
@@ -115,6 +116,10 @@ public class MCTS implements Strategy {
     }
 
     public void expand(NodeTree node){
+
+
+
+
         if(node.isWinningState()) {
             if (node.getColor() == color)
                 node.incrementWins(10);
@@ -123,8 +128,16 @@ public class MCTS implements Strategy {
         }else {
             NodeTree child = new NodeTree(node);
             ArrayList<Move> freeMoves = node.getState().getFreeMoves();
-            child.setMove(freeMoves.remove((int)(Math.random()*freeMoves.size())));
+           // ExtensionStrategy exst = new ExtensionStrategy(freeMoves,node.getState(),node.getColor().opposite());
+           // Move m = exst.getSuggestedMove(freeMoves);
+           child.setMove(freeMoves.remove((int)(Math.random()*freeMoves.size())));
+            //freeMoves.remove(m);  //child.setMove();
+           // child.setMove(m);
             child.incrementGame();
+
+
+
+
             if(child.isWinningState()) {
                 if (child.getColor() == color)
                     child.incrementWins(10);
