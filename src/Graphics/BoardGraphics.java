@@ -22,8 +22,11 @@ public class BoardGraphics extends JPanel implements Observer{
     private Path2D[][] polyCells;
     private Color color;
     private boolean current, canSwap;
+    private float proportion;
+    private float initX;
+    private float initY;
+    private float radius;
     private float distanceXY;
-    private float proportion = 2;
     private int x,y;
     public BoardGraphics(Match match){
         grid = match.getBoard().getGrid();
@@ -97,12 +100,20 @@ public class BoardGraphics extends JPanel implements Observer{
     }
 
     public void paintComponent(Graphics g){
+
+        proportion = 480.0f/(40+10*(grid.length-1)-10/8*(grid.length-1)+58/4*(grid.length-1));
+        System.out.println(proportion);
+        radius = 10*proportion;
+        distanceXY = 3*proportion;
+        initX = 20*proportion;
+        initY = 20*proportion;
         super.paintComponent(g);
 
         Graphics2D g2 = (Graphics2D) g;
         if(polyCells==null)
             generateHexGrid();
-        //paintBorders(g);
+        paintBorders(g);
+
         for (int i=0;i<grid.length;i++){
             for (int j=0;j<grid.length;j++){
 
@@ -126,10 +137,6 @@ public class BoardGraphics extends JPanel implements Observer{
     }
 
     private void generateHexGrid(){
-        float initX = 40;
-        float initY = 40;
-        float radius = 10*proportion;
-        distanceXY=3*proportion;
         float X;
         float Y;
         polyCells = new Path2D[grid.length][grid.length];
@@ -173,6 +180,7 @@ public class BoardGraphics extends JPanel implements Observer{
     public void paintBorders(Graphics g2){
 
         Polygon upperSide = new Polygon();
+        /*
         double lenghtX = polyCells[0][0].getBounds2D().getWidth()*(grid.length)+(distanceXY*(grid.length-1));
         double point1X = polyCells[0][0].getBounds2D().getX() - (3*proportion);
         double point1Y = polyCells[0][0].getBounds2D().getY() - (3*proportion);
@@ -185,18 +193,39 @@ public class BoardGraphics extends JPanel implements Observer{
 
         double point4X = point2X - polyCells[0][0].getBounds2D().getWidth()/2;
         double point4Y = point3Y;
+*/
+
+
+
+        double point1X = initX;
+        double point1Y = initY;
+
+        double point2X = point1X + (radius*2-radius/4 +distanceXY)*(grid.length-1);
+        double point2Y = point1Y;
+
+        double point3X = point2X + 15*proportion;
+        double point3Y = point1Y - 15*proportion;
+
+        double point4X = point1X - 15*proportion - 5*proportion;
+        double point4Y = point1Y - 15*proportion;
 
         upperSide.addPoint((int)point1X,(int)point1Y);
         upperSide.addPoint((int)point2X,(int)point2Y);
-        upperSide.addPoint((int)point4X,(int)point4Y);
         upperSide.addPoint((int)point3X,(int)point3Y);
+        upperSide.addPoint((int)point4X,(int)point4Y);
 
 
-        double point1X2 = point3X + polyCells[0][0].getBounds2D().getWidth()/2 * (polyCells.length-2);
-        double point1Y2 = polyCells[0][0].getBounds2D().getY() + polyCells[0][0].getBounds2D().getHeight()*(polyCells.length);
+        double p1X = initX+radius*(grid.length-1)-radius/8*(grid.length-1);
+        double p1Y = initY+(radius*(grid.length-1))+(radius*(grid.length-1))/2 +(grid.length-1)*distanceXY;
 
-        double point2X2 = point1X2 + lenghtX +(6*proportion);
-        double point2Y2 = point1Y2;
+        double p2X = initX+radius*(grid.length-1)-radius/8*(grid.length-1) + (radius*2-radius/4 +distanceXY)*(grid.length-1);
+        double p2Y = p1Y;
+
+        double p3X = p2X + (15*proportion) + 5*proportion;
+        double p3Y = p2Y + (15*proportion);
+
+        double p4X = p1X - (15*proportion);
+        double p4Y = p1Y + (15*proportion);
 
 
 
@@ -205,15 +234,31 @@ public class BoardGraphics extends JPanel implements Observer{
 
 
         Polygon lowerSide = new Polygon();
-        lowerSide.addPoint((int)point1X2,(int)point1Y2);
-        lowerSide.addPoint((int)point2X2,(int)point2Y2);
-        lowerSide.addPoint((int)100,(int)100);
+        lowerSide.addPoint((int)p1X,(int)p1Y);
+        lowerSide.addPoint((int)p2X,(int)p2Y);
+        lowerSide.addPoint((int)p3X,(int)p3Y);
+        lowerSide.addPoint((int)p4X,(int)p4Y);
+
+        Polygon leftSide = new Polygon();
+        leftSide.addPoint((int)point4X,(int)point4Y);
+        leftSide.addPoint((int)point1X,(int)point1Y);
+        leftSide.addPoint((int)p1X,(int)p1Y);
+        leftSide.addPoint((int)p4X,(int)p4Y);
+
+        Polygon rightSide = new Polygon();
+        rightSide.addPoint((int)point2X,(int)point2Y);
+        rightSide.addPoint((int)point3X,(int)point3Y);
+        rightSide.addPoint((int)p3X,(int)p3Y);
+        rightSide.addPoint((int)p2X,(int)p2Y);
+
 
 
         g2.setColor(Color.RED);
         g2.fillPolygon(upperSide);
         g2.fillPolygon(lowerSide);
-
+        g2.setColor(Color.BLUE);
+        g2.fillPolygon(leftSide);
+        g2.fillPolygon(rightSide);
 
 
     }
