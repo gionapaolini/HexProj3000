@@ -13,10 +13,17 @@ package hypertree;
  * for the model. 
  * It keeps the original euclidian coordinates of the node.
  * It implements the Composite design pattern.
+ *
+
  */
 class HTModelNode {
 
     private HTModel model  = null; // tree model
+
+    public HTNode getNode() {
+        return node;
+    }
+
     private HTNode node   = null; // encapsulated HTNode
     private HTModelNodeComposite parent = null; // parent node
 
@@ -25,7 +32,7 @@ class HTModelNode {
     private HTCoordE z      = null; // Euclidian coordinates
     private HTCoordE zr     = null; // to compute radius reduction
 
-    protected double               weight = 1.0;  // part of space taken by this node
+    protected double               weight =  1.0;  // part of space taken by this node
 
 
   /* --- Constructor --- */

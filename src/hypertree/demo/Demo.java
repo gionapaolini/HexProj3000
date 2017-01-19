@@ -65,7 +65,7 @@ public class Demo {
             return;
         }
 
-        hypertree = new HyperTree(root);
+        //hypertree = new HyperTree(root);
         Dimension preveredSize = new Dimension(800,600);
         HTView view = hypertree.getView(preveredSize);
 

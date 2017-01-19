@@ -1,6 +1,7 @@
 package Graphics;
 
 //import Graphics.ChessView.ChessView;
+
 import hypertree.HTView;
 import hypertree.HyperTree;
 
@@ -18,12 +19,12 @@ public class Analysor extends JFrame{
 
     private  JButton chessViewButton = new JButton("Chess Board View");
     private  JButton hyperViewButton = new JButton("Hyperplane View");
-    private  JButton neuralViewButton = new JButton("Neuralnet View");
+    private  JButton layerViewButton = new JButton("Layer View");
 
     //private ChessView chessView;
     private HTView hyperTreeView;
-    //private NeuralNetworkView nnw;
-
+    private LayerView lw;
+    private JPanel layerView;
 
 
     public Analysor(UserInterface ui) {
@@ -41,12 +42,12 @@ public class Analysor extends JFrame{
 
         buttonPanel.add(chessViewButton);
         buttonPanel.add(hyperViewButton);
-        buttonPanel.add(neuralViewButton);
+        buttonPanel.add(layerViewButton);
 
 
         chessViewButton.addActionListener(e -> showChessView(userInterface));
         hyperViewButton.addActionListener(e -> showHyperView(userInterface));
-       // neuralViewButton.addActionListener(e -> showNeuralView(userInterface));
+        layerViewButton.addActionListener(e -> showLayerView(userInterface));
 
 
 
@@ -55,10 +56,17 @@ public class Analysor extends JFrame{
 
     }
 
-   // private void showNeuralView(MainGui mainGui) {
+    private void showLayerView(UserInterface ui) {
+
+        Dimension preveredSize = new Dimension(800,600);
+        LayerView layer = new LayerView(ui.gameGui.getMatch().getRootTreeMcts(),preveredSize);
 
 
-   // }
+        replaceMainPanel(layer);
+        layer.setVisible(true);
+        layer.repaint();
+
+   }
 
     private void showHyperView(UserInterface ui) {
         String pathRoot = "I:\\DateienBilderPersönlich";
@@ -66,6 +74,7 @@ public class Analysor extends JFrame{
 
 
         HyperTree hypertree = new HyperTree(ui.gameGui.getMatch().getRootTreeMcts());
+
         Dimension preveredSize = new Dimension(800,600);
                 hyperTreeView = hypertree.getView(preveredSize);
        // this.add(hyperTreeView, BorderLayout.CENTER);
@@ -74,6 +83,7 @@ public class Analysor extends JFrame{
         replaceMainPanel(hyperTreeView);
         hyperTreeView.setVisible(true);
         hyperTreeView.repaint();
+
     }
 
     private void replaceMainPanel(Component component) {
@@ -83,7 +93,10 @@ public class Analysor extends JFrame{
        //     if (c.equals(buttonPanel)){
         //        continue;
        //     }}
-
+        if (mainPanel!=null){
+            remove(mainPanel);
+            mainPanel=null;
+        }
        //if (chessView!=null) remove(chessView);
         if (hyperTreeView!=null) remove(hyperTreeView);
         //if (nnw!=null) remove(nnw);

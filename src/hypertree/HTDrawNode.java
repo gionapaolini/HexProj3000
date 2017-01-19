@@ -7,6 +7,8 @@
 
 package hypertree;
 
+import BotAlgorithms.MCTS.NodeTree;
+
 import java.awt.*;
 
 
@@ -17,8 +19,9 @@ import java.awt.*;
  */
 class HTDrawNode {
 
+
     protected HTDraw model = null; // drawing model
-    private HTModelNode node  = null; // encapsulated HTModelNode
+    protected HTModelNode node  = null; // encapsulated HTModelNode
 
     private HTCoordE ze    = null; // current euclidian coordinates
     private HTCoordE zr    = null; // current euclidian radius coordinates
@@ -39,6 +42,8 @@ class HTDrawNode {
     HTDrawNode(HTModelNode node, HTDraw model) {
         this.node = node;
         this.model = model;
+
+
 
         ze = new HTCoordE(node.getCoordinates());
         zr = new HTCoordE(node.getRCoord());
@@ -104,7 +109,7 @@ class HTDrawNode {
         double dist = ((zr.x - ze.x) * (zr.x - ze.x)) +
                       ((zr.y - ze.y) * (zr.y - ze.y));
         double coeff = Math.sqrt(dist) / model.getRadius();
-        model.drawNode(zs, coeff, g);
+        model.drawNode(zs, coeff, g,(NodeTree) node.getNode());
     }
 
 

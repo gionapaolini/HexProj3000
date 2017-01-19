@@ -188,6 +188,7 @@ public class Match {
     public void putStone(int x, int y){
         if(!paused) {
             board.putStone(x, y, players[currentPlayer].getColor());
+            System.out.println("Supposed Hashcode: " + board.hashCodeDouble());
             history.addRecord(new RecordMove(players[currentPlayer].getColor(),x,y));
             if (board.hasWon(players[currentPlayer].getColor())) {
                 System.out.println("WON"+players[currentPlayer].getColor());

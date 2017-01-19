@@ -7,6 +7,8 @@
 
 package hypertree;
 
+import BotAlgorithms.MCTS.NodeTree;
+
 import java.awt.*;
 import java.util.Enumeration;
 import java.util.Vector;
@@ -40,7 +42,9 @@ class HTDrawNodeComposite
         HTModelNode childNode = null;
         HTDrawNode child = null;
         for (Enumeration e = node.children(); e.hasMoreElements(); ) {
-            childNode = (HTModelNode) e.nextElement();
+            //todo here are the actual values to draw
+            Object d = e.nextElement();
+            childNode = (HTModelNode) d;
             if (childNode.isLeaf()) {
                 child = new HTDrawNode(childNode, model);
             } else {
@@ -107,7 +111,7 @@ class HTDrawNodeComposite
         for (Enumeration e = children(); e.hasMoreElements(); ) {
             child = (HTDrawNode) e.nextElement();
             model.drawBranch(this.getScreenCoordinates(), 
-                             child.getScreenCoordinates(), g);
+                             child.getScreenCoordinates(), g,(NodeTree) node.getNode(), (NodeTree) child.node.getNode());
             child.drawBranches(g); 
         }
     }

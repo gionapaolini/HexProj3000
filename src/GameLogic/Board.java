@@ -154,4 +154,36 @@ public class Board {
         return false;
     }
 
+    private static double[][] frequencies;
+
+    public double getFrequency(int x, int y){
+        if (frequencies==null){
+            frequencies = new double[size][size];
+            for (int x_i = 0; x_i < size; x_i++) {
+                for (int y_i = 0; y_i < size; y_i++) {
+                    double exponent = (x_i*size+y_i) / (2.0*size); //
+                    double f = 110 * Math.pow(2,exponent);
+                    System.out.println("xyf:" + x_i + " " + y_i + " " + f);
+                    frequencies[x_i][y_i] = 110 * Math.pow(2,exponent);
+                }
+            }
+        }
+
+        return frequencies[x][y];
+    }
+
+    public double hashCodeDouble(){
+        //alternative,,, something with phases.
+        double f = 0;
+        for (int x_i = 0; x_i < size; x_i++) {
+            for (int y_i = 0; y_i < size; y_i++) {
+                f += grid[x_i][y_i].getStatus().getInt() * getFrequency(x_i,y_i);
+            }
+        }
+
+
+        return f;
+    }
+
+
 }

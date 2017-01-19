@@ -8,6 +8,9 @@
 package hypertree;
 
 
+import BotAlgorithms.MCTS.NodeTree;
+
+import javax.swing.tree.TreeNode;
 import java.awt.*;
 
 /**
@@ -36,7 +39,7 @@ public class HyperTree {
      * @param root    the root of the tree to be represented;
      *                could not be <CODE>null</CODE>
      */
-    public HyperTree(HTNode root) {
+    public HyperTree(NodeTree root) {
         model = new HTModel(root);
     }
 
