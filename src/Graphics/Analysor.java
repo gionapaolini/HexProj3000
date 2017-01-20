@@ -59,7 +59,7 @@ public class Analysor extends JFrame{
     private void showLayerView(UserInterface ui) {
 
         Dimension preveredSize = new Dimension(800,600);
-        LayerView layer = new LayerView(ui.gameGui.getMatch().getRootTreeMcts(),preveredSize);
+        LayerView layer = new LayerView(ui,preveredSize);
 
 
         replaceMainPanel(layer);

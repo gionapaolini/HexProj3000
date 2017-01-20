@@ -4,24 +4,70 @@ import BotAlgorithms.MCTS.NodeTree;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.util.*;
 
 /**
  * Created by nibbla on 16.01.17.
  */
 public class LayerView extends JPanel{
     private final Dimension preservedSize;
+    private final UserInterface userInterface;
     ArrayList<ArrayList<NodeTree>> values;
+    private LinkedList<Polygon> polygones  = new LinkedList<>();;
+    private HashMap<Polygon, NodeTree> messages = new HashMap<>(4000);
 
-    public LayerView(NodeTree root, Dimension preveredSize){
+    public LayerView(UserInterface ui, Dimension preveredSize){
         super(new BorderLayout());
+
+
         setPreferredSize(preveredSize);
         setBackground(Color.white);
 
         this.preservedSize = preveredSize;
+
+        userInterface = ui;
+
+        createTree();
+
+
+
+        this.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                for(Polygon p: polygones){
+                    if (p.contains(e.getPoint())){
+                        JOptionPane.showMessageDialog(null, messages.get(p).toString(), "Info", JOptionPane.OK_CANCEL_OPTION);
+                    }
+                }
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+    }
+
+    private void createTree() {
+        NodeTree root = userInterface.gameGui.getMatch().getRootTreeMcts();
         int height = root.getHeight();
         System.out.println("Height: " + height);
         values = new ArrayList<>(root.getHeight());
@@ -38,26 +84,26 @@ public class LayerView extends JPanel{
         for (int i = 0; i <values.size(); i++) {
             System.out.println("Level " + i + " has " + values.get(i).size() + "members");
         }
-
-
     }
-
 
 
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         g.setColor(Color.red);
         //g.fillRect(0,0,(int)preservedSize.getWidth(),(int)preservedSize.getHeight());
-
+        messages.clear();
+        messages = new HashMap<>(4000);
+        polygones.clear();
+        polygones = new LinkedList<>();
         double layerHeight = this.getHeight() / values.size() / 2;
         double layerWidth = this.getWidth();
         Random r = new Random();
-
+        createTree();
         Map<NodeTree,int[]> map = new HashMap<>(200);
         for (int i = 0; i <values.size(); i++){
             ArrayList<Integer> leftiesNew = new ArrayList<>(200);
             int layerHeight1= (int) (layerHeight*(i*2));
-            int layerHeight0= (int) (layerHeight*(i*2-1));
+            int layerHeight2= (int) (layerHeight*(i*2+1));
 
             double totalSimulationsInThisLayer = 0;
             ArrayList<NodeTree> singleLayer = values.get(i);
@@ -82,19 +128,45 @@ public class LayerView extends JPanel{
 
                 lastLayerRight = lastLayerLeft + choiceWidth;
                 g.setColor(new Color(r.nextInt()));
-                g.fillRect(lastLayerLeft,layerHeight1,choiceWidth,layerHeight0-layerHeight1);
+                g.fillRect(lastLayerLeft,layerHeight1,choiceWidth,layerHeight2-layerHeight1);
                 int[] valuePair = {lastLayerLeft,lastLayerRight};
                 map.put(singleLayer.get(j),valuePair);
 
+                int[] XpointsSqare = new int[4];
+                int[] YpointsSqare = new int[4];
+                XpointsSqare[0] = lastLayerLeft;
+                XpointsSqare[1] = lastLayerRight;
+                XpointsSqare[2] = lastLayerRight;
+                XpointsSqare[3] = lastLayerLeft;
+
+                YpointsSqare[2] = layerHeight2;
+                YpointsSqare[3] = layerHeight2;
+                YpointsSqare[0] = layerHeight1;
+                YpointsSqare[1] = layerHeight1;
+                Polygon p = new Polygon(XpointsSqare,YpointsSqare,4);
+                polygones.add(p);
+                messages.put(p,singleLayer.get(j));
 
 
                 if(i!=0 ) {
-                    ;
+                    int layerHeight_minus1= (int) (layerHeight*(i*2-1));
+
                     valuePair = map.get(singleLayer.get(j).getParent());
                     if (valuePair==null)break;
                     //draw from currrent lastlayerleftAndRight to parent left and right a polygon!!!
-                    //point p1 = valuepair;
-                    //p2
+                    int[] Xpoints = new int[4];
+                    int[] Ypoints = new int[4];
+                    Xpoints[0] = valuePair[0];
+                    Xpoints[1] = valuePair[1];
+                    Xpoints[2] = lastLayerRight;
+                    Xpoints[3] = lastLayerLeft;
+
+                    Ypoints[2] = layerHeight1;
+                    Ypoints[3] = layerHeight1;
+                    Ypoints[0] = layerHeight_minus1;
+                    Ypoints[1] = layerHeight_minus1;
+
+                    g.fillPolygon(Xpoints,Ypoints,4);
                 }
 
 
@@ -108,7 +180,7 @@ public class LayerView extends JPanel{
             int choiceWidth = (int) (ratio* layerWidth);
             lastLayerRight = lastLayerLeft + choiceWidth;
             g.setColor(new Color(r.nextInt()));
-            g.fillRect(lastLayerLeft,layerHeight1,choiceWidth,layerHeight0-layerHeight1);
+            g.fillRect(lastLayerLeft,layerHeight1,choiceWidth,layerHeight2-layerHeight1);
 
             lastLayerLeft = lastLayerRight;
 

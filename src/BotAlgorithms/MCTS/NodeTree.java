@@ -125,6 +125,15 @@ public class NodeTree implements HTNode {
         return count;
     }
 
+    public String toString(){
+
+        String s =  color.toString() + " " ;
+        if (move != null) s+= move.toString();
+        s += " " + "Depth: " + getDepth() + " Height: " + getHeight() + " Value: " + totalWins + " Games: " + totalGames + " Parent: ";
+        if (parent != null) if (parent.move!=null) s += parent.move.toString();
+        return s;
+    }
+
     @Override
     public Enumeration children() {
         Enumeration c = Collections.enumeration(childrens);
