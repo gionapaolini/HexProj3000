@@ -102,7 +102,6 @@ public class BoardGraphics extends JPanel implements Observer{
     public void paintComponent(Graphics g){
 
         proportion = 480.0f/(40+10*(grid.length-1)-10/8*(grid.length-1)+58/4*(grid.length-1));
-        System.out.println(proportion);
         radius = 10*proportion;
         distanceXY = 3*proportion;
         initX = 20*proportion;
