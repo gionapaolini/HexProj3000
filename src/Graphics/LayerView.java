@@ -5,6 +5,8 @@ import BotAlgorithms.MCTS.NodeTree;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 /**
@@ -50,9 +52,12 @@ public class LayerView extends JPanel{
         double layerHeight = this.getHeight() / values.size() / 2;
         double layerWidth = this.getWidth();
         Random r = new Random();
+
+        Map<NodeTree,int[]> map = new HashMap<>(200);
         for (int i = 0; i <values.size(); i++){
+            ArrayList<Integer> leftiesNew = new ArrayList<>(200);
             int layerHeight1= (int) (layerHeight*(i*2));
-            int layerHeight2= (int) (layerHeight*(i*2+1));
+            int layerHeight0= (int) (layerHeight*(i*2-1));
 
             double totalSimulationsInThisLayer = 0;
             ArrayList<NodeTree> singleLayer = values.get(i);
@@ -62,23 +67,62 @@ public class LayerView extends JPanel{
             }
 
             int lastLayerLeft = 0;
+
             int lastLayerRight = 0;
+
+
+            int others = 0;
+
 
             for (int j = 0; j <singleLayer.size(); j++){
                 double choiseTotalGames = singleLayer.get(j).getTotalGames();
                 double ratio = choiseTotalGames/totalSimulationsInThisLayer;
                 int choiceWidth = (int) (ratio* layerWidth);
+                if (choiceWidth<1) {others++; continue;}
+
                 lastLayerRight = lastLayerLeft + choiceWidth;
                 g.setColor(new Color(r.nextInt()));
-                g.fillRect(lastLayerLeft,layerHeight1,choiceWidth,layerHeight2-layerHeight1);
+                g.fillRect(lastLayerLeft,layerHeight1,choiceWidth,layerHeight0-layerHeight1);
+                int[] valuePair = {lastLayerLeft,lastLayerRight};
+                map.put(singleLayer.get(j),valuePair);
+
+
+
+                if(i!=0 ) {
+                    ;
+                    valuePair = map.get(singleLayer.get(j).getParent());
+                    if (valuePair==null)break;
+                    //draw from currrent lastlayerleftAndRight to parent left and right a polygon!!!
+                    //point p1 = valuepair;
+                    //p2
+                }
+
+
+
+
                 lastLayerLeft = lastLayerRight;
             }
 
+            //print others wich are too small
+            double ratio = others/totalSimulationsInThisLayer;
+            int choiceWidth = (int) (ratio* layerWidth);
+            lastLayerRight = lastLayerLeft + choiceWidth;
+            g.setColor(new Color(r.nextInt()));
+            g.fillRect(lastLayerLeft,layerHeight1,choiceWidth,layerHeight0-layerHeight1);
+
+            lastLayerLeft = lastLayerRight;
 
 
-            //print first layer
+            //go from old ones from left to right and
 
-            //print connection layer
+
+
+
+
+
+
+
+
 
         }
 
