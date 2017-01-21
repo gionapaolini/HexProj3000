@@ -202,6 +202,6 @@ public class MCTS_2 implements Strategy{
 
     @Override
     public NodeTree_2 getRootTreeMcts() {
-        return null;
+        return root;
     }
 }
