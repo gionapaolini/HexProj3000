@@ -17,6 +17,13 @@ public class RecordMove {
         status = true;
     }
 
+    public RecordMove(StatusCell color, int x, int y, boolean status){
+        this.color = color;
+        this.x = x;
+        this.y = y;
+        this.status = status;
+    }
+
     public void deleteMove(){
         status = false;
     }

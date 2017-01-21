@@ -9,8 +9,11 @@ import GameLogic.History.History;
 import GameLogic.History.RecordMove;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.*;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -306,5 +309,94 @@ public class Match {
         }
         return null;
     }
+
+
+
+    public void saveMatch() throws FileNotFoundException {
+        JFileChooser fileChooser = new JFileChooser("./Saved");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("HEX GAME FILE", "hex", "Hex Dump");
+        fileChooser.setFileFilter(filter);
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            if(!file.getName().substring(file.getName().length() - 4).equals(".hex")){
+                file = new File(fileChooser.getSelectedFile()+".hex");
+            }
+            PrintWriter writer = new PrintWriter(file);
+            writer.println("settings "+swapRule);
+            writer.println("time "+timeGame.h+" "+timeGame.m+" "+timeGame.s);
+            for (RecordMove record: history.getRecords()){
+                writer.println("rec "+record.toString());
+            }
+            writer.close();
+            System.out.println(file);
+        }
+    }
+
+    public void loadMatch() throws IOException {
+        JFileChooser fileChooser = new JFileChooser("./Saved");
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("HEX GAME FILE", "hex", "Hex Dump");
+        fileChooser.setFileFilter(filter);
+        if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+
+            FileReader fr;
+            fr = new FileReader(file);
+            String line;
+            BufferedReader reader = new BufferedReader(fr);
+            history = new History();
+            while (true){
+                line = reader.readLine();
+                if(line==null) {
+                    loadHistory(history);
+                    return;
+                }
+                String[] currentLine = line.split(" ");
+                if(currentLine[0].equals("settings")){
+                    if(currentLine[1].equals("true")){
+                        swapRule = true;
+                    }else {
+                        swapRule = false;
+                    }
+                }else if(currentLine[0].equals("time")) {
+                    timeGame.h = (short) Integer.parseInt(currentLine[1]);
+                    timeGame.m = (short) Integer.parseInt(currentLine[2]);
+                    timeGame.s = (short) Integer.parseInt(currentLine[3]);
+                }else {
+                    boolean status;
+                    StatusCell player;
+                    byte row, column;
+
+                    if(currentLine[1].equals("Blue")){
+                        player = StatusCell.Blue;
+                    }else {
+                        player = StatusCell.Red;
+                    }
+                    column = (byte)Integer.parseInt(currentLine[2]);
+                    row = (byte)Integer.parseInt(currentLine[3]);
+                    if(currentLine[4].equals("false")){
+                        status = false;
+                    }else {
+                        status = true;
+                    }
+                    history.addRecord(new RecordMove(player,row,column,status));
+
+
+                }
+
+
+
+            }
+
+        }
+        notifyImportant();
+    }
+
+
+
+
+
+
+
+
 
 }

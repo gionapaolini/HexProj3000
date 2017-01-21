@@ -10,6 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  * Created by giogio on 1/11/17.
@@ -75,6 +77,10 @@ public class ControlPanel extends JPanel {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
                 match.pause();
+                if(match.isPaused())
+                    pauseButton.setText("Unpause");
+                else
+                    pauseButton.setText("Pause");
             }
         });
 
@@ -94,6 +100,28 @@ public class ControlPanel extends JPanel {
                     analysor = new Analysor(userInterface);
                 }
                 analysor.setVisible(!analysor.isVisible());
+            }
+        });
+
+        saveButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    match.saveMatch();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        loadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                try {
+                    match.loadMatch();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
