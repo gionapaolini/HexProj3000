@@ -60,14 +60,15 @@ public class MCTS implements Strategy {
             copy.putStone(nodeTree.getMove().getX(),nodeTree.getMove().getY(), enemy);
             if(copy.isEqual(initialBoard)){
                 root = nodeTree;
+                root.setParent(null);
                 return;
             }
             copy.setEmpty(nodeTree.getMove().getX(),nodeTree.getMove().getY());
         }
 
 
-        root = lastNode;
-        root.setParent(null);
+
+
     }
 
     private NodeTree selectBestMoveNode(NodeTree root){
