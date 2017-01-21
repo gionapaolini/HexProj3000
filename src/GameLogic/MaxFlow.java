@@ -146,7 +146,7 @@ public class MaxFlow {
 
     }
 
-    public static Node[] construct(Board board, StatusCell blue) {
+    public static Node[] construct(Board board, StatusCell playerside) {
         // Just an example to setup the data structures.
         // nodes[0] is the start node, nodes[n-1] is the end node.
         Node[] nodes = new Node[board.getSize()+2];
