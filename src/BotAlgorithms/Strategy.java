@@ -1,6 +1,6 @@
 package BotAlgorithms;
 
-import BotAlgorithms.MCTS.NodeTree;
+import BotAlgorithms.MCTS_2.NodeTree_2;
 import GameLogic.Move;
 
 /**
@@ -8,5 +8,5 @@ import GameLogic.Move;
  */
 public interface Strategy {
     public Move getMove();
-    public NodeTree getRootTreeMcts();
+    public NodeTree_2 getRootTreeMcts();
 }

@@ -15,8 +15,8 @@ public class MCTS_2 implements Strategy{
     private StatusCell enemy;
     private Board realBoard;
     private int maxtTime, n_expansion;
-    private NodeTree root;
-    private NodeTree lastMove;
+    private NodeTree_2 root;
+    private NodeTree_2 lastMove;
 
 
     public MCTS_2(Board realBoard, StatusCell color, int maxtTime, int depthLevel){
@@ -42,10 +42,10 @@ public class MCTS_2 implements Strategy{
 
     }
 
-    public NodeTree getBestMove(){
-        NodeTree bestNode = null;
+    public NodeTree_2 getBestMove(){
+        NodeTree_2 bestNode = null;
         double bestValue = -999999999;
-        for(NodeTree child: root.getChildren()){
+        for(NodeTree_2 child: root.getChildren()){
             if(child.isDeadCell())
                 continue;
             if(child.isWinningMove() || child.isLosingMove()){
@@ -62,13 +62,13 @@ public class MCTS_2 implements Strategy{
         return bestNode;
     }
 
-    public NodeTree selection(NodeTree node){
+    public NodeTree_2 selection(NodeTree_2 node){
         if(node.getState().getFreeMoves().size()>0)
             return node;
 
-        NodeTree bestNode = node;
+        NodeTree_2 bestNode = node;
         double bestValue = -999999999;
-        for(NodeTree child: node.getChildren()){
+        for(NodeTree_2 child: node.getChildren()){
             double value = UCB1(child);
             if(value>bestValue) {
                 bestNode = child;
@@ -82,7 +82,7 @@ public class MCTS_2 implements Strategy{
         if(lastMove!=null) {
             Board copy = lastMove.getState().getCopy();
 
-            for (NodeTree child : lastMove.getChildren()) {
+            for (NodeTree_2 child : lastMove.getChildren()) {
                 Move move = child.getMove();
                 copy.putStone(move.getX(), move.getY(), enemy);
                 if (copy.isEqual(realBoard)) {
@@ -96,16 +96,16 @@ public class MCTS_2 implements Strategy{
             lastMove = null;
             setNewRoot();
         }else {
-            root = new NodeTree(null);
+            root = new NodeTree_2(null);
             root.setColor(enemy);
             root.setState(realBoard.getCopy());
         }
     }
 
-    public void expansion(NodeTree node){
+    public void expansion(NodeTree_2 node){
         if(!node.isWinningMove() && !node.isLosingMove() && !node.isDeadCell()) {
             ArrayList<Move> moves = node.getState().getFreeMoves();
-            NodeTree newNode = new NodeTree(node);
+            NodeTree_2 newNode = new NodeTree_2(node);
             Move move = moves.remove((int) (Math.random() * moves.size()));
             newNode.setMove(move);
             n_expansion++;
@@ -148,7 +148,7 @@ public class MCTS_2 implements Strategy{
 
     }
 
-    public void simulate(NodeTree node){
+    public void simulate(NodeTree_2 node){
         StatusCell current;
         if(node.getColor() == StatusCell.Blue)
             current = StatusCell.Red;
@@ -181,7 +181,7 @@ public class MCTS_2 implements Strategy{
     }
 
 
-    public double UCB1(NodeTree node){
+    public double UCB1(NodeTree_2 node){
 
         float vi = (float) node.getWins() / node.getGames();
         int np = node.getGames();
@@ -201,7 +201,7 @@ public class MCTS_2 implements Strategy{
     }
 
     @Override
-    public BotAlgorithms.MCTS.NodeTree getRootTreeMcts() {
+    public NodeTree_2 getRootTreeMcts() {
         return null;
     }
 }

@@ -4,22 +4,23 @@ import EnumVariables.StatusCell;
 import GameLogic.Board;
 import GameLogic.Cell;
 import GameLogic.Move;
+import hypertree.HTNode;
 
-import java.util.ArrayList;
+import java.util.*;
 
 /**
  * Created by giogio on 1/21/17.
  */
-public class NodeTree {
+public class NodeTree_2 implements HTNode {
     private Board state;
     private Move move;
-    private NodeTree parent;
-    private ArrayList<NodeTree> children;
+    private NodeTree_2 parent;
+    private ArrayList<NodeTree_2> children;
     private StatusCell color;
     private int wins,games;
     private boolean winningMove, losingMove, deadCell;
 
-    public NodeTree(NodeTree parent){
+    public NodeTree_2(NodeTree_2 parent){
         if(parent!=null){
             this.parent = parent;
             parent.addChildren(this);
@@ -129,7 +130,7 @@ public class NodeTree {
         this.color = color;
     }
 
-    public void addChildren(NodeTree child){
+    public void addChildren(NodeTree_2 child){
         children.add(child);
     }
 
@@ -141,11 +142,11 @@ public class NodeTree {
         return move;
     }
 
-    public NodeTree getParent() {
+    public NodeTree_2 getParent() {
         return parent;
     }
 
-    public ArrayList<NodeTree> getChildren() {
+    public ArrayList<NodeTree_2> getChildren() {
         return children;
     }
 
@@ -165,7 +166,75 @@ public class NodeTree {
         return winningMove;
     }
 
-    public void setParent(NodeTree parent) {
+    public void setParent(NodeTree_2 parent) {
         this.parent = parent;
+    }
+
+    public String toString(){
+
+        String s =  color.toString() + " " ;
+        if (move != null) s+= move.toString();
+        s += " " + "Depth: " + getDepth() + " Height: " + getHeight() + " Value: " + wins + " Games: " + games + " Parent: ";
+        if (parent != null) if (parent.move!=null) s += parent.move.toString();
+        return s;
+    }
+
+    public int getDepth(){
+        NodeTree_2 dad = parent;
+        int count = 0;
+        while (dad!=null) {
+            count++;
+            dad = dad.parent;
+        }
+        return count;
+    }
+
+    public int getHeight(){
+        if (isLeaf()) return 0;
+        int maxHeight = -1;
+        for (int i = 0; i < children.size(); i++) {
+            int childHeight = children.get(i).getHeight();
+            if (childHeight>maxHeight) maxHeight = childHeight;
+        }
+
+        maxHeight+=1;
+        return maxHeight;
+    }
+
+
+    @Override
+    public Enumeration children() {
+        Enumeration c = Collections.enumeration(children);
+        return c;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        if (children.size()==0)return true;
+        return false;
+    }
+
+    @Override
+    public String getName() {
+        if (move == null) return "root";
+        return move.toString();
+    }
+
+    public  ArrayList<NodeTree_2> breadthFirst(){
+        ArrayList<NodeTree_2> bfsearch = new ArrayList<>(games);
+        Queue<NodeTree_2> quey = new LinkedList<NodeTree_2>();
+
+        quey.add(this);
+        while (!quey.isEmpty()){
+            NodeTree_2 n = quey.remove();
+            bfsearch.add(n);
+            for (int i = 0; i < n.children.size(); i++) {
+                quey.add(n.children.get(i));
+            }
+
+        }
+
+        return bfsearch;
+
     }
 }

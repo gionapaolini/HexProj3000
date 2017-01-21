@@ -1,6 +1,6 @@
 package BotAlgorithms.MCTS;
 
-import BotAlgorithms.ExtensionStrategy;
+import BotAlgorithms.MCTS_2.NodeTree_2;
 import BotAlgorithms.Strategy;
 import EnumVariables.StatusCell;
 import GameLogic.Board;
@@ -251,8 +251,8 @@ public class MCTS implements Strategy {
     }
 
     @Override
-    public NodeTree getRootTreeMcts() {
-        return root;
+    public NodeTree_2 getRootTreeMcts() {
+        return null; //root;
     }
 
 

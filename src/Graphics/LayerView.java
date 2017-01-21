@@ -1,6 +1,7 @@
 package Graphics;
 
 import BotAlgorithms.MCTS.NodeTree;
+import BotAlgorithms.MCTS_2.NodeTree_2;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,9 +15,9 @@ import java.util.*;
 public class LayerView extends JPanel{
     private final Dimension preservedSize;
     private final UserInterface userInterface;
-    ArrayList<ArrayList<NodeTree>> values;
+    ArrayList<ArrayList<NodeTree_2>> values;
     private LinkedList<Polygon> polygones  = new LinkedList<>();;
-    private HashMap<Polygon, NodeTree> messages = new HashMap<>(4000);
+    private HashMap<Polygon, NodeTree_2> messages = new HashMap<>(4000);
 
     public LayerView(UserInterface ui, Dimension preveredSize){
         super(new BorderLayout());
@@ -67,17 +68,17 @@ public class LayerView extends JPanel{
     }
 
     private void createTree() {
-        NodeTree root = userInterface.gameGui.getMatch().getRootTreeMcts();
+        NodeTree_2 root = userInterface.gameGui.getMatch().getRootTreeMcts();
         int height = root.getHeight();
         System.out.println("Height: " + height);
         values = new ArrayList<>(root.getHeight());
         for (int i = 0; i <= height; i++) {
             values.add(new ArrayList<>());
         }
-        ArrayList<NodeTree> breadthFirst = root.breadthFirst();
+        ArrayList<NodeTree_2> breadthFirst = root.breadthFirst();
         int bfs = breadthFirst.size();
         for (int i = 0; i <bfs; i++) {
-            NodeTree node = breadthFirst.get(i);
+            NodeTree_2 node = breadthFirst.get(i);
             int depth = node.getDepth();
             values.get(depth).add(node);
         }
@@ -99,17 +100,17 @@ public class LayerView extends JPanel{
         double layerWidth = this.getWidth();
         Random r = new Random();
         createTree();
-        Map<NodeTree,int[]> map = new HashMap<>(200);
+        Map<NodeTree_2,int[]> map = new HashMap<>(200);
         for (int i = 0; i <values.size(); i++){
             ArrayList<Integer> leftiesNew = new ArrayList<>(200);
             int layerHeight1= (int) (layerHeight*(i*2));
             int layerHeight2= (int) (layerHeight*(i*2+1));
 
             double totalSimulationsInThisLayer = 0;
-            ArrayList<NodeTree> singleLayer = values.get(i);
+            ArrayList<NodeTree_2> singleLayer = values.get(i);
 
             for (int j = 0; j <singleLayer.size(); j++){
-                totalSimulationsInThisLayer+= singleLayer.get(j).getTotalGames();
+                totalSimulationsInThisLayer+= singleLayer.get(j).getGames();
             }
 
             int lastLayerLeft = 0;
@@ -121,7 +122,7 @@ public class LayerView extends JPanel{
 
 
             for (int j = 0; j <singleLayer.size(); j++){
-                double choiseTotalGames = singleLayer.get(j).getTotalGames();
+                double choiseTotalGames = singleLayer.get(j).getGames();
                 double ratio = choiseTotalGames/totalSimulationsInThisLayer;
                 int choiceWidth = (int) (ratio* layerWidth);
                 if (choiceWidth<1) {others++; continue;}
