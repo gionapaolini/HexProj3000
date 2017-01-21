@@ -51,4 +51,10 @@ public class Bot extends Player{
     public NodeTree_2 getRootTreeMcts(){
         return strategy.getRootTreeMcts();
     }
+    public void resetTree(){
+        strategy.resetTree();
+    }
+    public void updateBoard(Board board){
+        strategy.updateBoard(board);
+    }
 }

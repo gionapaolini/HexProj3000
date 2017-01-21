@@ -255,5 +255,15 @@ public class MCTS implements Strategy {
         return null; //root;
     }
 
+    @Override
+    public void resetTree() {
+
+    }
+
+    @Override
+    public void updateBoard(Board board) {
+
+    }
+
 
 }

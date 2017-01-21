@@ -190,20 +190,20 @@ public class Match {
         return history;
     }
     public void putStone(int x, int y){
-        if(!paused) {
-            board.putStone(x, y, players[currentPlayer].getColor());
-            System.out.println("Supposed Hashcode: " + board.hashCodeDouble());
-            history.addRecord(new RecordMove(players[currentPlayer].getColor(),x,y));
-            if (board.hasWon(players[currentPlayer].getColor())) {
-                System.out.println("WON"+players[currentPlayer].getColor());
-                won = true;
-                pause();
-            } else {
-                switchPlayer();
-            }
-            notifyImportant();
-            System.out.println("Notified");
+
+        board.putStone(x, y, players[currentPlayer].getColor());
+        System.out.println("Supposed Hashcode: " + board.hashCodeDouble());
+        history.addRecord(new RecordMove(players[currentPlayer].getColor(),x,y));
+        if (board.hasWon(players[currentPlayer].getColor())) {
+            System.out.println("WON"+players[currentPlayer].getColor());
+            won = true;
+            pause();
+        } else {
+            switchPlayer();
         }
+        notifyImportant();
+        System.out.println("Notified");
+
     }
 
     public void addObserver(Observer observer){
@@ -247,10 +247,11 @@ public class Match {
         paused=!paused;
         if(paused)
             timer.stop();
-        else
+        else {
             timer.start();
-        if(players[currentPlayer] instanceof Bot){
-            players[currentPlayer].makeMove(0,0);
+            if (players[currentPlayer] instanceof Bot) {
+                players[currentPlayer].makeMove(0, 0);
+            }
         }
     }
 
@@ -292,6 +293,18 @@ public class Match {
         }
 
         loadHistory(history);
+        Bot pl;
+        if(players[0] instanceof Bot){
+            pl = (Bot) players[0];
+            pl.resetTree();
+            pl.updateBoard(board);
+        }
+        if(players[1] instanceof Bot){
+            pl = (Bot) players[1];
+            pl.resetTree();
+            pl.updateBoard(board);
+        }
+
 
 
     }
@@ -348,7 +361,7 @@ public class Match {
                 line = reader.readLine();
                 if(line==null) {
                     loadHistory(history);
-                    return;
+                    break;
                 }
                 String[] currentLine = line.split(" ");
                 if(currentLine[0].equals("settings")){
@@ -387,6 +400,30 @@ public class Match {
 
             }
 
+        }
+
+        StatusCell lastColor = history.getLastValidRec().getColor();
+        StatusCell current;
+        if(lastColor == StatusCell.Red){
+            current = StatusCell.Blue;
+        }else {
+            current = StatusCell.Red;
+        }
+        if(players[0].getColor() == current)
+            currentPlayer = 0;
+        else
+            currentPlayer = 1;
+
+        Bot pl;
+        if(players[0] instanceof Bot){
+            pl = (Bot) players[0];
+            pl.resetTree();
+            pl.updateBoard(board);
+        }
+        if(players[1] instanceof Bot){
+            pl = (Bot) players[1];
+            pl.resetTree();
+            pl.updateBoard(board);
         }
         notifyImportant();
     }

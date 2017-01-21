@@ -29,4 +29,11 @@ public class History {
         }
         return count;
     }
+    public RecordMove getLastValidRec(){
+        for (int i=records.size()-1;i>=0;i--){
+            if(records.get(i).isStatus())
+                return records.get(i);
+        }
+        return null;
+    }
 }

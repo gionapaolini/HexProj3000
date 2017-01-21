@@ -204,4 +204,15 @@ public class MCTS_2 implements Strategy{
     public NodeTree_2 getRootTreeMcts() {
         return root;
     }
+
+    @Override
+    public void resetTree() {
+        lastMove = null;
+        System.out.println("DOOONE ___________________________");
+    }
+
+    @Override
+    public void updateBoard(Board board) {
+        realBoard = board;
+    }
 }
