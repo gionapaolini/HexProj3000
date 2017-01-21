@@ -131,6 +131,7 @@ public class NodeTree_2 implements HTNode {
     }
 
     public void addChildren(NodeTree_2 child){
+      //  System.out.println(this);
         children.add(child);
     }
 

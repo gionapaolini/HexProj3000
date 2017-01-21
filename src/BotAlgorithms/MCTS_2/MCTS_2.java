@@ -1,5 +1,6 @@
 package BotAlgorithms.MCTS_2;
 
+import BotAlgorithms.ExtensionStrategy;
 import BotAlgorithms.Strategy;
 import EnumVariables.StatusCell;
 import GameLogic.Board;
@@ -11,6 +12,7 @@ import java.util.ArrayList;
  * Created by giogio on 1/21/17.
  */
 public class MCTS_2 implements Strategy{
+    private boolean extensionStrategy;
     private StatusCell ally;
     private StatusCell enemy;
     private Board realBoard;
@@ -19,7 +21,7 @@ public class MCTS_2 implements Strategy{
     private NodeTree_2 lastMove;
 
 
-    public MCTS_2(Board realBoard, StatusCell color, int maxtTime, int depthLevel){
+    public MCTS_2(Board realBoard, StatusCell color, int maxtTime, int depthLevel, boolean ExtensionStrategy){
         this.realBoard = realBoard;
         this.ally = color;
         if(color == StatusCell.Blue)
@@ -27,6 +29,7 @@ public class MCTS_2 implements Strategy{
         else
             enemy = StatusCell.Blue;
         this.maxtTime = maxtTime;
+        this.extensionStrategy = ExtensionStrategy;
     }
 
     public Move start(){
@@ -103,6 +106,29 @@ public class MCTS_2 implements Strategy{
     }
 
     public void expansion(NodeTree_2 node){
+        if (extensionStrategy == false) standardExpansion(node);
+        else specialExpansion(node);
+
+
+
+    }
+
+    private void specialExpansion(NodeTree_2 node) {
+        ArrayList<Move> moves = node.getState().getFreeMoves();
+        NodeTree_2 newNode = new NodeTree_2(node);
+        ExtensionStrategy es = new ExtensionStrategy(moves,node.getState(),ally);
+
+
+        newNode.setMove(es.getSuggestedMove(moves));
+        n_expansion++;
+        if (!newNode.isWinningMove() && !newNode.isLosingMove()){
+            simulate(newNode);
+        }
+        newNode.incrementGame();
+    }
+
+    private void standardExpansion(NodeTree_2 node) {
+
         if(!node.isWinningMove() && !node.isLosingMove() && !node.isDeadCell()) {
             ArrayList<Move> moves = node.getState().getFreeMoves();
             NodeTree_2 newNode = new NodeTree_2(node);
@@ -143,9 +169,6 @@ public class MCTS_2 implements Strategy{
             }
             node.incrementGame();
         }
-
-
-
     }
 
     public void simulate(NodeTree_2 node){

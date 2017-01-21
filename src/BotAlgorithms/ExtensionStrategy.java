@@ -64,11 +64,14 @@ public class ExtensionStrategy {
         this.board = b;
         Cell[][] cells = b.getGrid();
          n = b.getSize();
+
+        boolean[][] freeMove = new boolean[n][n];
         weights = new int[n][n];
+        //distance to player
         int[][] disttancePlayer = new int[n][n];
         boolean[][] visitedPlayer = new boolean[n][n];
 
-        boolean[][] freeMove = new boolean[n][n];
+
 
         int[][] disttanceEnemy = new int[n][n];
         boolean[][] visitedEnemy = new boolean[n][n];
@@ -97,7 +100,7 @@ public class ExtensionStrategy {
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
                 if ( disttancePlayer[x][y] == 0) disttancePlayer[x][y] = -1;
-                    if ( disttanceEnemy[x][y] == 0) disttanceEnemy[x][y] = -1;
+                if ( disttanceEnemy[x][y] == 0) disttanceEnemy[x][y] = -1;
 
                 if ( disttancePlayer[x][y] != -1) disttancePlayer[x][y] = Math.abs(disttancePlayer[x][y]-2);
                 if ( disttanceEnemy[x][y] != -1) disttanceEnemy[x][y] = Math.abs(disttanceEnemy[x][y]-3);
@@ -145,7 +148,7 @@ public class ExtensionStrategy {
                 weightSum += weights[x][y];
             }
         }
-/*
+
         System.out.println("EnemyDistances");
         for (int[] arr : disttanceEnemy) {
             System.out.println(Arrays.toString(arr));
@@ -156,7 +159,7 @@ public class ExtensionStrategy {
             System.out.println(Arrays.toString(arr));
         }
         System.out.println("PauerToThePeople");
-*/
+
         System.out.println("weights");
         for (int[] w : weights) {
             System.out.println(Arrays.toString(w));

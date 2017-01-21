@@ -37,7 +37,7 @@ public class MenuGUI extends JPanel {
 
 
     private final String[] gameTypeEntries = {"Human vs Human", "Human vs Bot", "Bot vs Bot"};
-    private final String[] botTypeEntries = {"MCTS","PathFinding",  "A-B Pruning"};
+    private final String[] botTypeEntries = {"MCTS","MCTS_ExtensionStrategy","PathFinding",  "A-B Pruning"};
     private final String[] colorEntries = {"Red","Blue"};
 
     private final JComboBox<String>  gameType = new JComboBox<>(gameTypeEntries);
@@ -274,6 +274,9 @@ public class MenuGUI extends JPanel {
                     bot1Type = BotType.PathFinding;
                 }else if(botTypeBlue.getSelectedItem().equals("MCTS")) {
                     bot1Type = BotType.MCTS;
+                }
+                else if(botTypeBlue.getSelectedItem().equals("MCTS_ExtensionStrategy")) {
+                        bot1Type = BotType.MCTS_ExtensionStrategy;
                 }else {
                     bot1Type = BotType.AlphaBeta;
                 }
@@ -286,6 +289,8 @@ public class MenuGUI extends JPanel {
                     bot1Type = BotType.PathFinding;
                 }else if(botTypeRed.getSelectedItem().equals("MCTS")) {
                     bot1Type = BotType.MCTS;
+                }else if(botTypeRed.getSelectedItem().equals("MCTS_ExtensionStrategy")) {
+                    bot1Type = BotType.MCTS_ExtensionStrategy;
                 }else {
                     bot1Type = BotType.AlphaBeta;
                 }
@@ -316,7 +321,10 @@ public class MenuGUI extends JPanel {
                 botBlueType = BotType.PathFinding;
             }else if(botTypeBlue.getSelectedItem().equals("MCTS")) {
                 botBlueType = BotType.MCTS;
-            }else {
+            }else if(botTypeBlue.getSelectedItem().equals("MCTS_ExtensionStrategy")) {
+                botBlueType = BotType.MCTS_ExtensionStrategy;
+            }
+            else {
                 botBlueType = BotType.AlphaBeta;
             }
 
@@ -324,6 +332,8 @@ public class MenuGUI extends JPanel {
                 botRedType = BotType.PathFinding;
             }else if(botTypeRed.getSelectedItem().equals("MCTS")) {
                 botRedType = BotType.MCTS;
+            }else if(botTypeRed.getSelectedItem().equals("MCTS_ExtensionStrategy")) {
+                botRedType = BotType.MCTS_ExtensionStrategy;
             }else {
                 botRedType = BotType.AlphaBeta;
             }

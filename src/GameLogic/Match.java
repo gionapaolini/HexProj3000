@@ -119,8 +119,10 @@ public class Match {
                 players[0] = new Human(StatusCell.Red, this);
                 if(bot1Type==BotType.PathFinding)
                     players[1] = new Bot(bot1Type, bot1Color, this);
-                else
-                    players[1] = new Bot(bot1Type, bot1Color, this, maxTimeBlue,depthlvlBlue);
+                else  players[1] = new Bot(bot1Type, bot1Color, this, maxTimeBlue,depthlvlBlue);
+
+
+
 
                 botTurn = true;
                 currentPlayer = 1;
@@ -391,7 +393,7 @@ public class Match {
                     }else {
                         status = true;
                     }
-                    history.addRecord(new RecordMove(player,row,column,status));
+                    history.addRecord(new RecordMove(player,column,row,status));
 
 
                 }

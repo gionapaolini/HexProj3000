@@ -69,6 +69,7 @@ public class LayerView extends JPanel{
 
     private void createTree() {
         NodeTree_2 root = userInterface.gameGui.getMatch().getRootTreeMcts();
+        if (root  == null) return;
         int height = root.getHeight();
         System.out.println("Height: " + height);
         values = new ArrayList<>(root.getHeight());

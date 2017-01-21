@@ -1,5 +1,6 @@
 package GameLogic;
 
+import BotAlgorithms.ExtensionStrategy;
 import BotAlgorithms.MCTS_2.NodeTree_2;
 import BotAlgorithms.MCTS_2.MCTS_2;
 import BotAlgorithms.Strategy;
@@ -27,7 +28,9 @@ public class Bot extends Player{
         this.maxTime = maxTime;
         this.depthlvl = depthlvl;
         if(type == BotType.MCTS)
-            strategy = new MCTS_2(match.getBoard(),color,maxTime,depthlvl);
+            strategy = new MCTS_2(match.getBoard(),color,maxTime,depthlvl,false);
+        if(type == BotType.MCTS_ExtensionStrategy)
+            strategy = new MCTS_2(match.getBoard(),color,maxTime,depthlvl,true);
 
 
     }
