@@ -54,7 +54,7 @@ public class MCTS implements Strategy {
 
     public void setNewRoot(){
 
-        /*
+
         Board copy = lastNode.getState().getCopy();
         for(NodeTree nodeTree: lastNode.getChildrens()){
             copy.putStone(nodeTree.getMove().getX(),nodeTree.getMove().getY(), enemy);
@@ -64,7 +64,7 @@ public class MCTS implements Strategy {
             }
             copy.setEmpty(nodeTree.getMove().getX(),nodeTree.getMove().getY());
         }
-        */
+
 
         root = lastNode;
         root.setParent(null);

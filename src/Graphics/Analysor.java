@@ -69,8 +69,6 @@ public class Analysor extends JFrame{
    }
 
     private void showHyperView(UserInterface ui) {
-        String pathRoot = "I:\\DateienBilderPersönlich";
-        File rootFile = new File(pathRoot);
 
 
         HyperTree hypertree = new HyperTree(ui.gameGui.getMatch().getRootTreeMcts());
