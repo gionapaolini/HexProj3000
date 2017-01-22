@@ -1,17 +1,22 @@
 package BotAlgorithms.MCTS_2;
 
 import BotAlgorithms.ExtensionStrategy;
+import BotAlgorithms.MCTS.NodeTree;
 import BotAlgorithms.Strategy;
 import EnumVariables.StatusCell;
 import GameLogic.Board;
 import GameLogic.Move;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by giogio on 1/21/17.
  */
 public class MCTS_2 implements Strategy{
+    private final static Logger log = Logger.getLogger( MCTS_2.class.getName() );
+
     private boolean extensionStrategy;
     private StatusCell ally;
     private StatusCell enemy;
@@ -38,14 +43,36 @@ public class MCTS_2 implements Strategy{
         n_expansion = 0;
         while (System.currentTimeMillis() - startTime <maxtTime){
             expansion(selection(root));
+
         }
         System.out.println("Expansions: "+n_expansion);
 
-        return getBestMove().getMove();
+        NodeTree_2 m = getBestMove();
+        while (m == null){
+            expansion(selection(root));
+            m = getBestMove();
+        }
+
+        return m.getMove();
 
     }
 
     public NodeTree_2 getBestMove(){
+        NodeTree_2 bestNode = null;
+        double bestValue = -999999999;
+        for(NodeTree_2 child: root.getChildren()){
+
+            double value = child.getGames();
+            if(value>bestValue) {
+                bestNode = child;
+                bestValue = value;
+            }
+        }
+        lastMove = bestNode;
+        return bestNode;
+    }
+
+    public NodeTree_2 getBestMoveGiona(){
         NodeTree_2 bestNode = null;
         double bestValue = -999999999;
         for(NodeTree_2 child: root.getChildren()){
@@ -66,6 +93,7 @@ public class MCTS_2 implements Strategy{
     }
 
     public NodeTree_2 selection(NodeTree_2 node){
+
         if(node.getState().getFreeMoves().size()>0)
             return node;
 
@@ -73,6 +101,7 @@ public class MCTS_2 implements Strategy{
         double bestValue = -999999999;
         for(NodeTree_2 child: node.getChildren()){
             double value = UCB1(child);
+            log.info(child.toString() + " UCB1: " + value);
             if(value>bestValue) {
                 bestNode = child;
                 bestValue = value;
@@ -106,6 +135,8 @@ public class MCTS_2 implements Strategy{
     }
 
     public void expansion(NodeTree_2 node){
+        if (node == null) log.severe("Expansion With null node");
+
         if (extensionStrategy == false) standardExpansion(node);
         else specialExpansion(node);
 
@@ -141,14 +172,18 @@ public class MCTS_2 implements Strategy{
                 if(!newNode.isDeadCell()) {
                     if(newNode.getColor() == ally){
                         if(newNode.isWinningMove())
-                            newNode.incrementWin(10);
+                            newNode.incrementWin(1);
+                        // newNode.incrementWin(10);
                         else
-                            newNode.incrementWin(5);
+                            newNode.incrementWin(1);
+                        //newNode.incrementWin(5);
                     }else {
                         if (newNode.isWinningMove())
-                            newNode.incrementWin(-10);
+                            newNode.incrementWin(0);
+                        //newNode.incrementWin(-10);
                         else
-                            newNode.incrementWin(-5);
+                            newNode.incrementWin(0);
+                        //newNode.incrementWin(-5);
                     }
                 }
             }
@@ -157,14 +192,18 @@ public class MCTS_2 implements Strategy{
             if(!node.isDeadCell()) {
                 if(node.getColor() == ally){
                     if(node.isWinningMove())
-                        node.incrementWin(10);
+                        node.incrementWin(1);
+                        // newNode.incrementWin(10);
                     else
-                        node.incrementWin(5);
+                        node.incrementWin(1);
+                    // newNode.incrementWin(5);
                 }else {
                     if (node.isWinningMove())
-                        node.incrementWin(-10);
+                        node.incrementWin(0);
+                        // newNode.incrementWin(-10);
                     else
-                        node.incrementWin(-5);
+                        node.incrementWin(0);
+                    // newNode.incrementWin(-5);
                 }
             }
             node.incrementGame();
@@ -199,7 +238,8 @@ public class MCTS_2 implements Strategy{
         if(copy.hasWon(ally))
             node.incrementWin(1);
         else
-            node.incrementWin(-1);
+        // node.incrementWin(-1);
+            node.incrementWin(0);
 
     }
 
@@ -211,8 +251,8 @@ public class MCTS_2 implements Strategy{
         int ni = node.getParent().getGames();
         float a = 0.5f;
         double C = Math.sqrt(2);
-        if(vi>a)
-            C = 0;
+        //if(vi>a)
+        //    C = 0;
 
         return vi + C * Math.sqrt(Math.log(np)/ni);
     }
