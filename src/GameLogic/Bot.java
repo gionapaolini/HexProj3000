@@ -3,6 +3,7 @@ package GameLogic;
 import BotAlgorithms.ExtensionStrategy;
 import BotAlgorithms.MCTS_2.NodeTree_2;
 import BotAlgorithms.MCTS_2.MCTS_2;
+import BotAlgorithms.PathFinding.PathFinderBot;
 import BotAlgorithms.Strategy;
 import EnumVariables.BotType;
 import EnumVariables.StatusCell;
@@ -19,6 +20,8 @@ public class Bot extends Player{
         this.type = type;
         this.color = color;
         this.match = match;
+        strategy = new PathFinderBot(match, color);
+
 
     }
     public Bot(BotType type, StatusCell color, Match match, int maxTime, int depthlvl){
@@ -31,6 +34,7 @@ public class Bot extends Player{
             strategy = new MCTS_2(match.getBoard(),color,maxTime,depthlvl,false);
         if(type == BotType.MCTS_ExtensionStrategy)
             strategy = new MCTS_2(match.getBoard(),color,maxTime,depthlvl,true);
+
 
 
     }
