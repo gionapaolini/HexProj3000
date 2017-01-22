@@ -135,6 +135,30 @@ public class NodeTree_2 implements HTNode {
         children.add(child);
     }
 
+    public void setChildren(ArrayList<NodeTree_2> children) {
+        this.children = children;
+    }
+
+    public void setWins(int wins) {
+        this.wins = wins;
+    }
+
+    public void setGames(int games) {
+        this.games = games;
+    }
+
+    public void setWinningMove(boolean winningMove) {
+        this.winningMove = winningMove;
+    }
+
+    public void setLosingMove(boolean losingMove) {
+        this.losingMove = losingMove;
+    }
+
+    public void setDeadCell(boolean deadCell) {
+        this.deadCell = deadCell;
+    }
+
     public Board getState() {
         return state;
     }

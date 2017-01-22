@@ -194,7 +194,7 @@ public class Match {
     public void putStone(int x, int y){
 
         board.putStone(x, y, players[currentPlayer].getColor());
-        System.out.println("Supposed Hashcode: " + board.hashCodeDouble());
+//        System.out.println("Supposed Hashcode: " + board.hashCodeDouble());
         history.addRecord(new RecordMove(players[currentPlayer].getColor(),x,y));
         if (board.hasWon(players[currentPlayer].getColor())) {
             System.out.println("WON"+players[currentPlayer].getColor());
@@ -337,7 +337,7 @@ public class Match {
                 file = new File(fileChooser.getSelectedFile()+".hex");
             }
             PrintWriter writer = new PrintWriter(file);
-            writer.println("settings "+swapRule);
+            writer.println("settings "+swapRule+" "+boardSize);
             writer.println("time "+timeGame.h+" "+timeGame.m+" "+timeGame.s);
             for (RecordMove record: history.getRecords()){
                 writer.println("rec "+record.toString());
@@ -372,10 +372,11 @@ public class Match {
                     }else {
                         swapRule = false;
                     }
+                    boardSize = Integer.parseInt(currentLine[2]);
                 }else if(currentLine[0].equals("time")) {
-                    timeGame.h = (short) Integer.parseInt(currentLine[1]);
-                    timeGame.m = (short) Integer.parseInt(currentLine[2]);
-                    timeGame.s = (short) Integer.parseInt(currentLine[3]);
+                    timeGame.h = Integer.parseInt(currentLine[1]);
+                    timeGame.m = Integer.parseInt(currentLine[2]);
+                    timeGame.s = Integer.parseInt(currentLine[3]);
                 }else {
                     boolean status;
                     StatusCell player;

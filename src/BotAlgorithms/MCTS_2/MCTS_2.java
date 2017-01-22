@@ -47,17 +47,12 @@ public class MCTS_2 implements Strategy{
         }
         System.out.println("Expansions: "+n_expansion);
 
-        NodeTree_2 m = getBestMove();
-        while (m == null){
-            expansion(selection(root));
-            m = getBestMove();
-        }
 
-        return m.getMove();
+        return getBestMove().getMove();
 
     }
 
-    public NodeTree_2 getBestMove(){
+    public NodeTree_2 getBestMoveMarcus(){
         NodeTree_2 bestNode = null;
         double bestValue = -999999999;
         for(NodeTree_2 child: root.getChildren()){
@@ -72,7 +67,7 @@ public class MCTS_2 implements Strategy{
         return bestNode;
     }
 
-    public NodeTree_2 getBestMoveGiona(){
+    public NodeTree_2 getBestMove(){
         NodeTree_2 bestNode = null;
         double bestValue = -999999999;
         for(NodeTree_2 child: root.getChildren()){
@@ -82,7 +77,7 @@ public class MCTS_2 implements Strategy{
                 lastMove = child;
                 return child ;
             }
-            double value = UCB1(child);
+            int value = child.getGames();
             if(value>bestValue) {
                 bestNode = child;
                 bestValue = value;
@@ -120,6 +115,7 @@ public class MCTS_2 implements Strategy{
                 if (copy.isEqual(realBoard)) {
                     root = child;
                     root.setParent(null);
+                    root.setLosingMove(false);
                     System.out.println("USED________");
                     return;
                 }
@@ -132,6 +128,7 @@ public class MCTS_2 implements Strategy{
             root.setColor(enemy);
             root.setState(realBoard.getCopy());
         }
+
     }
 
     public void expansion(NodeTree_2 node){

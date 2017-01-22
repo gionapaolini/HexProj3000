@@ -179,22 +179,6 @@ public class BoardGraphics extends JPanel implements Observer{
     public void paintBorders(Graphics g2){
 
         Polygon upperSide = new Polygon();
-        /*
-        double lenghtX = polyCells[0][0].getBounds2D().getWidth()*(grid.length)+(distanceXY*(grid.length-1));
-        double point1X = polyCells[0][0].getBounds2D().getX() - (3*proportion);
-        double point1Y = polyCells[0][0].getBounds2D().getY() - (3*proportion);
-
-        double point2X = point1X + lenghtX + (6*proportion);
-        double point2Y = point1Y;
-
-        double point3X = point1X + polyCells[0][0].getBounds2D().getWidth()/2;
-        double point3Y = point1Y + polyCells[0][0].getBounds2D().getWidth()/2;
-
-        double point4X = point2X - polyCells[0][0].getBounds2D().getWidth()/2;
-        double point4Y = point3Y;
-*/
-
-
 
         double point1X = initX;
         double point1Y = initY;
@@ -225,10 +209,6 @@ public class BoardGraphics extends JPanel implements Observer{
 
         double p4X = p1X - (15*proportion);
         double p4Y = p1Y + (15*proportion);
-
-
-
-
 
 
 
@@ -279,7 +259,12 @@ public class BoardGraphics extends JPanel implements Observer{
         }else{
             canSwap = false;
         }
+        if(important) {
+            grid = match.getBoard().getGrid();
+            System.out.println("HERER");
+        }
         repaint();
+
 
     }
 }
