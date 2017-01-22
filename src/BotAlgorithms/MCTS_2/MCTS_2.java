@@ -47,13 +47,8 @@ public class MCTS_2 implements Strategy{
         }
         System.out.println("Expansions: "+n_expansion);
 
-        NodeTree_2 m = getBestMove();
-       while (m == null){
-            expansion(selection(root));
-            m = getBestMove();
-       }
 
-        return m.getMove();
+        return getBestMove().getMove();
 
     }
 
@@ -173,18 +168,14 @@ public class MCTS_2 implements Strategy{
                 if(!newNode.isDeadCell()) {
                     if(newNode.getColor() == ally){
                         if(newNode.isWinningMove())
-                            newNode.incrementWin(1);
-                        // newNode.incrementWin(10);
+                            newNode.incrementWin(10);
                         else
-                            newNode.incrementWin(1);
-                        //newNode.incrementWin(5);
+                            newNode.incrementWin(5);
                     }else {
                         if (newNode.isWinningMove())
-                            newNode.incrementWin(0);
-                        //newNode.incrementWin(-10);
+                            newNode.incrementWin(-10);
                         else
-                            newNode.incrementWin(0);
-                        //newNode.incrementWin(-5);
+                            newNode.incrementWin(-5);
                     }
                 }
             }
@@ -193,18 +184,16 @@ public class MCTS_2 implements Strategy{
             if(!node.isDeadCell()) {
                 if(node.getColor() == ally){
                     if(node.isWinningMove())
-                        node.incrementWin(1);
-                        // newNode.incrementWin(10);
+                        node.incrementWin(10);
                     else
-                        node.incrementWin(1);
-                    // newNode.incrementWin(5);
+                        node.incrementWin(5);
                 }else {
                     if (node.isWinningMove())
-                        node.incrementWin(0);
-                        // newNode.incrementWin(-10);
+                        node.incrementWin(-10);
+
                     else
-                        node.incrementWin(0);
-                    // newNode.incrementWin(-5);
+                        node.incrementWin(-5);
+
                 }
             }
             node.incrementGame();
@@ -239,7 +228,6 @@ public class MCTS_2 implements Strategy{
         if(copy.hasWon(ally))
             node.incrementWin(1);
         else
-        // node.incrementWin(-1);
             node.incrementWin(0);
 
     }
@@ -250,10 +238,10 @@ public class MCTS_2 implements Strategy{
         float vi = (float) node.getWins() / node.getGames();
         int np = node.getGames();
         int ni = node.getParent().getGames();
-        float a = 0.5f;
+        float a = 0.85f;
         double C = Math.sqrt(2);
         if(vi>a)
-            C = 0;
+           C = 0;
 
         return vi + C * Math.sqrt(Math.log(ni)/np);
     }
