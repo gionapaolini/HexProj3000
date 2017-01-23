@@ -137,13 +137,81 @@ public class MaxFlow {
     }
 
     public static int[] flow(Board board){
-        Node[] nodes = construct(board, StatusCell.Blue);
-        int flow = maxFlow(nodes[nodes.length-2]);
+        Node startBlue = construct2d(board, StatusCell.Blue);
+        int flow = maxFlow(startBlue);
 
-        Node[] nodes2 = construct(board, StatusCell.Red);
-        int flow2 = maxFlow(nodes[nodes.length-2]);
+        Node startRed = construct2d(board, StatusCell.Red);
+        int flow2 = maxFlow(startRed);
         return new int[]{flow,flow2};
 
+    }
+
+    private static Node construct2d(Board board, StatusCell playerside) {
+        // Just an example to setup the data structures.
+        // nodes[0] is the start node, nodes[n-1] is the end node.
+        Cell[][] cells = board.getGrid();
+        Node[][] nodes = new Node[board.getSize()][board.getSize()];
+        int n = board.getSize();
+        int length = n*n;
+        for(int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                nodes[i][j] = new Node(i*n+j);
+            }
+
+        }
+        Node start = new Node(n*n);
+        Node end = new Node(n*n+1);
+
+       start.start = true;
+        end.end = true;
+
+        if (playerside == StatusCell.Blue) {
+            for (int y = 0; y < n; y++) {
+                Edge.connectDirected(start,nodes[y][0],999999);
+                Edge.connectDirected(end,nodes[y][n-1],999999);
+            }
+        }
+
+        if (playerside == StatusCell.Red) {
+            for (int y = 0; y < n; y++) {
+                Edge.connectDirected(start,nodes[0][y],999999);
+                Edge.connectDirected(end,nodes[n-1][y],999999);
+            }
+        }
+
+
+
+
+        for (int x = 0; x < n-1; x++) {  //spalte
+            for (int y = n-1; y >= 1; y--) { //zeile
+                int capacity = 1;
+                if (cells[y][x].getStatus()==playerside||cells[y][x+1].getStatus()==playerside) capacity = 999999;
+                if (cells[y][x].getStatus()==playerside.opposite()||cells[y][x+1].getStatus()==playerside.opposite()) capacity = 0;
+                Edge.connectDirected(nodes[y][x],nodes[y][x+1],capacity);
+                capacity = 1;
+                if (cells[y][x].getStatus()==playerside||cells[y-1][x].getStatus()==playerside) capacity = 999999;
+                if (cells[y][x].getStatus()==playerside.opposite()||cells[y-1][x].getStatus()==playerside.opposite()) capacity = 0;
+                Edge.connectDirected(nodes[y][x],nodes[y-1][x],capacity);
+                capacity = 1;
+                if (cells[y][x].getStatus()==playerside||cells[y-1][x+1].getStatus()==playerside) capacity = 999999;
+                if (cells[y][x].getStatus()==playerside.opposite()||cells[y-1][x+1].getStatus()==playerside.opposite()) capacity = 0;
+                Edge.connectDirected(nodes[y][x],nodes[y-1][x+1],capacity);
+            }
+
+        }
+
+        int capacity = 1;
+        if (cells[0][0].getStatus()==playerside||cells[1][0].getStatus()==playerside) capacity = 0;
+        if (cells[0][0].getStatus()==playerside.opposite()||cells[1][0].getStatus()==playerside.opposite()) capacity = 999999;
+        Edge.connectDirected(nodes[0][0],nodes[1][0],capacity);
+
+        capacity = 1;
+        if (cells[0][0].getStatus()==playerside||cells[0][1].getStatus()==playerside) capacity = 0;
+        if (cells[0][0].getStatus()==playerside.opposite()||cells[0][1].getStatus()==playerside.opposite()) capacity = 999999;
+        Edge.connectDirected(nodes[0][0],nodes[0][1],capacity);
+
+
+        return start;
     }
 
     public static Node[] construct(Board board, StatusCell playerside) {
@@ -151,16 +219,7 @@ public class MaxFlow {
         // nodes[0] is the start node, nodes[n-1] is the end node.
         Node[] nodes = new Node[board.getSize()+2];
 
-       /* for(int i = 0; i < N; i++) {
-            nodes[i] = new Node(i);
-        }
-        nodes[0].start = true;
-        nodes[N-1].end = true;
-        int M = from.length;
-        for(int i = 0; i < M; i++) {
-            Edge.connectDirected(nodes[from[i]], nodes[to[i]], capacity[i]);
-        }
-        */
+
         return nodes;
     }
 

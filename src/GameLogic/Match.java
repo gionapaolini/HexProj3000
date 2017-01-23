@@ -205,6 +205,7 @@ public class Match {
         }
         notifyImportant();
         System.out.println("Notified");
+        evaluate();
 
     }
 
@@ -432,11 +433,9 @@ public class Match {
     }
 
 
-
-
-
-
-
-
-
+    public void evaluate() {
+        int[] value = MaxFlow.flow(board);
+        System.out.print("BlueFlow: " + value[0]);
+        System.out.print("RedFlow: " + value[1]);
+    }
 }

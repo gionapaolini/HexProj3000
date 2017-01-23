@@ -13,5 +13,6 @@ public class Human extends Player{
     @Override
     public void makeMove(int x, int y) {
         super.makeMove(x, y);
+
     }
 }

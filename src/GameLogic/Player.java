@@ -10,6 +10,7 @@ public abstract class Player {
     protected Match match;
     public void makeMove(int x, int y){
         match.putStone(x,y);
+
     }
     public StatusCell getColor(){
         return color;
