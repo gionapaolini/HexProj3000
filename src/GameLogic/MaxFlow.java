@@ -147,6 +147,10 @@ public class MaxFlow {
     }
 
     private static Node construct2d(Board board, StatusCell playerside) {
+        int normalCapacity = 1;
+        int extremeCapacity = 99999;
+        int nodeCapacity = 6;
+
         // Just an example to setup the data structures.
         // nodes[0] is the start node, nodes[n-1] is the end node.
         Cell[][] cells = board.getGrid();
@@ -162,15 +166,17 @@ public class MaxFlow {
         Node start = new Node(n*n);
         Node end = new Node(n*n+1);
 
-       start.start = true;
+        start.start = true;
         end.end = true;
 
+        //source and sink
         if (playerside == StatusCell.Blue) {
             for (int y = 0; y < n; y++) {
                 Edge.connectDirected(start,nodes[y][0],999999);
                 Edge.connectDirected(end,nodes[y][n-1],999999);
             }
         }
+
 
         if (playerside == StatusCell.Red) {
             for (int y = 0; y < n; y++) {
@@ -183,48 +189,88 @@ public class MaxFlow {
 
 
         for (int x = 0; x < n-1; x++) {  //spalte
-            for (int y = n-1; y >= 1; y--) { //zeile
-                int capacity = 1;
-                if (cells[y][x].getStatus()==playerside||cells[y][x+1].getStatus()==playerside) capacity = 999999;
+            for (int y = 1; y < n; y++) { //zeile
+                boolean flag1;
+                boolean flag2;
+                if(y==9){
+                    flag1 = true;
+                }
+
+                int capacity = normalCapacity;
+                if (cells[y][x].getStatus()==playerside||cells[y][x+1].getStatus()==playerside) capacity = nodeCapacity;
+                if (cells[y][x].getStatus()==playerside&&cells[y][x+1].getStatus()==playerside) capacity = extremeCapacity;
                 if (cells[y][x].getStatus()==playerside.opposite()||cells[y][x+1].getStatus()==playerside.opposite()) capacity = 0;
                 Edge.connectDirected(nodes[y][x],nodes[y][x+1],capacity);
-                capacity = 1;
-                if (cells[y][x].getStatus()==playerside||cells[y-1][x].getStatus()==playerside) capacity = 999999;
+
+                capacity = normalCapacity;
+                if (cells[y][x].getStatus()==playerside||cells[y-1][x].getStatus()==playerside) capacity = nodeCapacity;
+                if (cells[y][x].getStatus()==playerside&&cells[y-1][x].getStatus()==playerside) capacity = extremeCapacity;
                 if (cells[y][x].getStatus()==playerside.opposite()||cells[y-1][x].getStatus()==playerside.opposite()) capacity = 0;
                 Edge.connectDirected(nodes[y][x],nodes[y-1][x],capacity);
-                capacity = 1;
-                if (cells[y][x].getStatus()==playerside||cells[y-1][x+1].getStatus()==playerside) capacity = 999999;
+
+                capacity = normalCapacity;
+                if (cells[y][x].getStatus()==playerside||cells[y-1][x+1].getStatus()==playerside) capacity = nodeCapacity;
+                if (cells[y][x].getStatus()==playerside&&cells[y-1][x+1].getStatus()==playerside) capacity = extremeCapacity;
                 if (cells[y][x].getStatus()==playerside.opposite()||cells[y-1][x+1].getStatus()==playerside.opposite()) capacity = 0;
                 Edge.connectDirected(nodes[y][x],nodes[y-1][x+1],capacity);
+
+
             }
 
         }
 
-        int capacity = 1;
-        if (cells[0][0].getStatus()==playerside||cells[1][0].getStatus()==playerside) capacity = 0;
-        if (cells[0][0].getStatus()==playerside.opposite()||cells[1][0].getStatus()==playerside.opposite()) capacity = 999999;
-        Edge.connectDirected(nodes[0][0],nodes[1][0],capacity);
+        int capacity = normalCapacity;
+        for (int x = 0; x < n-1; x++) {
+            capacity = normalCapacity;
+            if(x==0){
+                // System.out.println("check 98");
+            }
 
-        capacity = 1;
-        if (cells[0][0].getStatus()==playerside||cells[0][1].getStatus()==playerside) capacity = 0;
-        if (cells[0][0].getStatus()==playerside.opposite()||cells[0][1].getStatus()==playerside.opposite()) capacity = 999999;
-        Edge.connectDirected(nodes[0][0],nodes[0][1],capacity);
+            if (cells[0][x].getStatus()==playerside||cells[0][x+1].getStatus()==playerside){
+                boolean a = (cells[0][x].getStatus()==playerside);
+                boolean b = (cells[0][x+1].getStatus()==playerside);
+                capacity = nodeCapacity;
+            }
+            if (cells[0][x].getStatus()==playerside&&cells[0][x+1].getStatus()==playerside) capacity = extremeCapacity;
+            if (cells[0][x].getStatus()==playerside.opposite()||cells[0][x+1].getStatus()==playerside.opposite()) capacity = 0;
+            Edge.connectDirected(nodes[0][x],nodes[0][x+1],capacity);
+        }
+        for (int y = 1; y < n; y++) {
+            if(y==9){
+                System.out.println("check 98");
+            }
+            capacity = normalCapacity;
+            if (cells[y][n-1].getStatus()==playerside||cells[y-1][n-1].getStatus()==playerside) capacity = nodeCapacity;
+            if (cells[y][n-1].getStatus()==playerside&&cells[y-1][n-1].getStatus()==playerside) capacity = extremeCapacity;
+            if (cells[y][n-1].getStatus()==playerside.opposite()||cells[y-1][n-1].getStatus()==playerside.opposite()) capacity = 0;
+            Edge.connectDirected(nodes[y][n-1],nodes[y-1][n-1],capacity);
+        }
+
+
+
+        //capacity = startCapacity;
+
+
+       /* if (cells[0][0].getStatus()==playerside||cells[0][1].getStatus()==playerside) capacity = 6;
+        if (cells[0][0].getStatus()==playerside&&cells[0][1].getStatus()==playerside) capacity = 999999;
+        if (cells[0][0].getStatus()==playerside.opposite()||cells[0][1].getStatus()==playerside.opposite()) capacity = 0;
+        Edge.connectDirected(nodes[0][0],nodes[0][1],capacity);*/
+        System.out.println(playerside);
+        for (int y = 0; y < n; y++) {  //spalte
+            for (int x = 0; x < n ; x++) { //zeile
+                System.out.print("YX: " + y + " " + x +":" );
+                for (int i = 0; i < nodes[y][x].edges.size(); i++) {
+                    System.out.print(nodes[y][x].edges.get(i).capacity + " ");
+
+                }
+
+            }
+            System.out.println();
+        }
 
 
         return start;
     }
-
-    public static Node[] construct(Board board, StatusCell playerside) {
-        // Just an example to setup the data structures.
-        // nodes[0] is the start node, nodes[n-1] is the end node.
-        Node[] nodes = new Node[board.getSize()+2];
-
-
-        return nodes;
-    }
-
-
-
 
     // The following code is only applicable to find the minimum cut.
     static void reset(List<Edge> edges) {
