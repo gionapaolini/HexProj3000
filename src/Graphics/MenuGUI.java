@@ -279,6 +279,7 @@ public class MenuGUI extends JPanel {
                         bot1Type = BotType.MCTS_ExtensionStrategy;
                 }else {
                     bot1Type = BotType.AlphaBeta;
+                    System.out.println("BOT SELECTED: ALPHA BETA");
                 }
 
 

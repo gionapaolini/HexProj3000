@@ -158,6 +158,72 @@ public class AlphaBeta implements Strategy{
         }
     }
 
+    public static float evaluationOld(NodeTree node){
+        float ratio = 0;
+        if(node .getColor() == StatusCell.Blue) {
+            int[] horizontal = new int[10];
+            //Getting #horizontal
+            for (int j = 0; j < 10 ; j++) {
+                for (int jj = j; jj < j + 2; jj++) {
+                    for (int i = 0; i < node.getState().getGrid().length; i++) {
+                        if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Blue) {
+                            horizontal[j]++;
+                        }
+                    }
+                }
+            }
+            int[] vertical = new int[10];
+            //Getting #vertical
+            for (int j = 0; j < 10 ; j++) {
+                for (int jj = j; jj < j + 2; jj++) {
+                    for (int i = 0; i < node.getState().getGrid().length; i++) {
+                        if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Blue) {
+                            vertical[j]++;
+                        }
+                    }
+                }
+            }
+            System.out.println("DRatio Hor " + (getMax(horizontal)) + " Ver " + (getMax(vertical)));
+            ratio = (float)(getMax(horizontal)) / (float)(getMax(vertical));
+        }else {
+            int[] horizontal = new int[10];
+            //Getting #horizontal
+            for (int j = 0; j < 10 ; j++) {
+                for (int jj = j; jj < j + 2; jj++) {
+                    for (int i = 0; i < node.getState().getGrid().length; i++) {
+                        if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Red) {
+                            horizontal[j]++;
+                        }
+                    }
+                }
+            }
+            int[] vertical = new int[10];
+            //Getting #vertical
+            for (int j = 0; j < 10 ; j++) {
+                for (int jj = j; jj < j + 2; jj++) {
+                    for (int i = 0; i < node.getState().getGrid().length; i++) {
+                        if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Red) {
+                            vertical[j]++;
+                        }
+                    }
+                }
+            }
+            System.out.println("DRatio Hor " + (getMax(horizontal)) + " Ver " + (getMax(vertical)));
+            ratio = (float)(getMax(vertical)) / (float)getMax(horizontal);
+        }
+        return ratio;
+    }
+
+    public static int getMax(int[] arr){
+        int max = arr[0];
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] > max) {
+                max = arr[i];
+            }
+        }
+        return max;
+    }
+
     private void setNewValue(NodeTree parent){
         int bestValue;
         if(parent.getColor()==ally){
