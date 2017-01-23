@@ -261,7 +261,6 @@ public class BoardGraphics extends JPanel implements Observer{
         }
         if(important) {
             grid = match.getBoard().getGrid();
-            System.out.println("HERER");
         }
         repaint();
 

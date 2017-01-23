@@ -4,11 +4,8 @@ import BotAlgorithms.MCTS_2.NodeTree_2;
 import BotAlgorithms.Strategy;
 import EnumVariables.StatusCell;
 import GameLogic.Board;
-import GameLogic.Match;
 import GameLogic.MaxFlow;
 import GameLogic.Move;
-
-import java.util.List;
 
 /**
  * Created by giogio on 1/22/17.
@@ -21,7 +18,7 @@ public class AlphaBeta implements Strategy{
     int maxTime, iterativeValue;
     int countEval, countPrune;
     double startTime;
-    boolean newEval = true;
+    boolean flowEvaluation = false;
 
 
     public AlphaBeta(Board realBoard, StatusCell color, int maxtTime, int depthLevel){
@@ -110,7 +107,7 @@ public class AlphaBeta implements Strategy{
         }
         if(node.getDepth()==iterativeValue){
             countEval ++;
-            if (newEval) evaluation(node);
+            if (flowEvaluation) evaluation(node);
             else evaluationOld(node);
             setNewValue(node.getParent());
         }
@@ -162,9 +159,9 @@ public class AlphaBeta implements Strategy{
     public static float evaluationOld(NodeTree node){
         float ratio = 0;
         if(node .getColor() == StatusCell.Blue) {
-            int[] horizontal = new int[node.getState().getGrid().length];
+            int[] horizontal = new int[node.getState().getGrid().length-1];
             //Getting #horizontal
-            for (int j = 0; j < node.getState().getGrid().length ; j++) {
+            for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
                         if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Blue) {
@@ -173,9 +170,9 @@ public class AlphaBeta implements Strategy{
                     }
                 }
             }
-            int[] vertical = new int[node.getState().getGrid().length];
+            int[] vertical = new int[node.getState().getGrid().length-1];
             //Getting #vertical
-            for (int j = 0; j < node.getState().getGrid().length ; j++) {
+            for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
                         if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Blue) {
@@ -184,12 +181,12 @@ public class AlphaBeta implements Strategy{
                     }
                 }
             }
-            System.out.println("DRatio Hor " + (getMax(horizontal)) + " Ver " + (getMax(vertical)));
+            //System.out.println("DRatio Hor " + (getMax(horizontal)) + " Ver " + (getMax(vertical)));
             ratio = (float)(getMax(horizontal)) / (float)(getMax(vertical));
         }else {
-            int[] horizontal = new int[node.getState().getGrid().length];
+            int[] horizontal = new int[node.getState().getGrid().length-1];
             //Getting #horizontal
-            for (int j = 0; j < node.getState().getGrid().length ; j++) {
+            for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
                         if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Red) {
@@ -198,9 +195,9 @@ public class AlphaBeta implements Strategy{
                     }
                 }
             }
-            int[] vertical = new int[node.getState().getGrid().length];
+            int[] vertical = new int[node.getState().getGrid().length-1];
             //Getting #vertical
-            for (int j = 0; j < 10 ; j++) {
+            for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
                         if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Red) {
@@ -209,7 +206,7 @@ public class AlphaBeta implements Strategy{
                     }
                 }
             }
-            System.out.println("DRatio Hor " + (getMax(horizontal)) + " Ver " + (getMax(vertical)));
+            //System.out.println("DRatio Hor " + (getMax(horizontal)) + " Ver " + (getMax(vertical)));
             ratio = (float)(getMax(vertical)) / (float)getMax(horizontal);
         }
         return ratio;
