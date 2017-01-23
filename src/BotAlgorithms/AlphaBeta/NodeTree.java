@@ -15,7 +15,7 @@ public class NodeTree {
     private NodeTree parent;
     private ArrayList<NodeTree> children;
     private Move move;
-    private float value;
+    private int value;
     private StatusCell color;
     private Board state;
     private boolean winningMove, losingMove, deadCell;
@@ -26,6 +26,7 @@ public class NodeTree {
         this.move = move;
         children = new ArrayList<>();
         if(parent!=null){
+            parent.addChildren(this);
             if(parent.getColor()==StatusCell.Blue)
                 color = StatusCell.Red;
             else
@@ -71,7 +72,7 @@ public class NodeTree {
         return losingMove;
     }
 
-    public void setValue(float value) {
+    public void setValue(int value) {
         this.value = value;
     }
 
@@ -103,11 +104,31 @@ public class NodeTree {
         return move;
     }
 
-    public float getValue() {
+    public int getValue() {
         return value;
     }
 
     public StatusCell getColor() {
         return color;
+    }
+
+    public void setState(Board state) {
+        this.state = state;
+    }
+
+    public void setWinningMove(boolean winningMove) {
+        this.winningMove = winningMove;
+    }
+
+    public void setLosingMove(boolean losingMove) {
+        this.losingMove = losingMove;
+    }
+
+    public void setDeadCell(boolean deadCell) {
+        this.deadCell = deadCell;
+    }
+
+    public void addChildren(NodeTree child){
+        children.add(child);
     }
 }
