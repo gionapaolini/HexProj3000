@@ -27,6 +27,7 @@ public class ExtensionStrategy {
         Move m = null;
         outerloop: for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
+
                 currentSum += weights[x][y];
                 if (currentSum >= currentLimit) {
 
@@ -46,7 +47,16 @@ public class ExtensionStrategy {
             System.out.println("SpecialRemoval" + m.toString());
         }
 
-
+        int count = 0;
+        outerloop: for (int x = 0; x < n; x++) {
+            for (int y = 0; y < n; y++) {
+                if (weights[x][y] == 0) {
+                    count++;
+                }
+            }
+        }
+        System.out.println("Weightcounter: " +  (n*n-count));
+        System.out.println("Freemovearraysize" + freeMoves.size());
 
         for (int i = 0; i < freeMoves.size(); i++) {
             if (freeMoves.get(i).getX()==m.getX() && freeMoves.get(i).getY()==m.getY()){
@@ -99,11 +109,12 @@ public class ExtensionStrategy {
          */
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
-                if ( disttancePlayer[x][y] == 0) disttancePlayer[x][y] = -1;
-                if ( disttanceEnemy[x][y] == 0) disttanceEnemy[x][y] = -1;
-
-                if ( disttancePlayer[x][y] != -1) disttancePlayer[x][y] = Math.abs(disttancePlayer[x][y]-2);
-                if ( disttanceEnemy[x][y] != -1) disttanceEnemy[x][y] = Math.abs(disttanceEnemy[x][y]-3);
+                //if ( disttancePlayer[x][y] == 0) disttancePlayer[x][y] = -1;
+                //if ( disttanceEnemy[x][y] == 0) disttanceEnemy[x][y] = -1;
+                disttancePlayer[x][y] = Math.abs(disttancePlayer[x][y]-2);
+                disttanceEnemy[x][y] = Math.abs(disttanceEnemy[x][y]-3);
+                //if ( disttancePlayer[x][y] != -1) disttancePlayer[x][y] = Math.abs(disttancePlayer[x][y]-2);
+                //if ( disttanceEnemy[x][y] != -1) disttanceEnemy[x][y] = Math.abs(disttanceEnemy[x][y]-3);
             }
         }
 
@@ -133,8 +144,9 @@ public class ExtensionStrategy {
         //calulating sum
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
-                int sum = disttancePlayer[x][y] + disttanceEnemy[x][y] + 1;
-                if (sum <0) sum = 0;
+
+                int sum = disttancePlayer[x][y] + disttanceEnemy[x][y];
+
                 if (sum > max) max = sum;
 
                 weights[x][y] = sum;
@@ -144,7 +156,8 @@ public class ExtensionStrategy {
 
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
-               if (weights[x][y] !=0) weights[x][y] = max - weights[x][y];
+                weights[x][y] = max - weights[x][y];
+                if (freeMove[x][y] == false) weights[x][y] = 0;
                 weightSum += weights[x][y];
             }
         }
@@ -164,7 +177,7 @@ public class ExtensionStrategy {
         for (int[] w : weights) {
             System.out.println(Arrays.toString(w));
         }
-        System.out.println("PauerToThePeople");
+        System.out.println("Freemove: " + freeMove.length + " " );
       /*  */
     }
 
@@ -178,16 +191,26 @@ public class ExtensionStrategy {
             return;
         }
         //destance search player
+
+
+
         while (!playerQueue.isEmpty()){
+
+
+
             Cell c =  playerQueue.poll();
             Cell[] neighbours = c.getNeighbors();
             for (int i = 0; i < neighbours.length; i++) {
                 Cell neigh = neighbours[i];
                 if (neigh == null) continue;
                 if (visitedPlayer[neigh.getCoordXJ()][neigh.getCoordYI()]) continue;
-
+                if (c.getCoordXJ()<0||c.getCoordXJ()==n||c.getCoordYI()<0||c.getCoordYI()==n){
+                    disttancePlayer[neigh.getCoordXJ()][neigh.getCoordYI()] = 1;
+                }else{
+                    disttancePlayer[neigh.getCoordXJ()][neigh.getCoordYI()] = disttancePlayer[c.getCoordXJ()][c.getCoordYI()]+1;
+                }
                // if (disttancePlayer[neigh.getCoordYI()][neigh.getCoordXJ()] != -1) continue;
-                disttancePlayer[neigh.getCoordXJ()][neigh.getCoordYI()] = disttancePlayer[c.getCoordXJ()][c.getCoordYI()]+1;
+
                 visitedPlayer[neigh.getCoordXJ()][neigh.getCoordYI()]=true;
                 playerQueue.add(neigh);
             }
@@ -203,10 +226,16 @@ public class ExtensionStrategy {
                     disttancePlayer[y][x] = 0;
                     disttanceEnemy[y][x] = -1;
                     playerQueue.add(cells[y][x]);
+                   /* if (player == StatusCell.Blue) {
+                        if (y!=n-1||y!=0) //checking for x and y that they not included twice
+                    }else {
+                        if (x!=n-1||x!=0)  playerQueue.add(cells[y][x]);  //checking for x and y that they not included twice
+
+                    }*/
+
                     visitedEnemy[y][x] = true;
                     visitedPlayer[y][x] = true;
-                }
-                else if (cells[y][x].getStatus() == player.opposite()){
+                } else if (cells[y][x].getStatus() == player.opposite()) {
                     disttanceEnemy[y][x] = 0;
                     disttancePlayer[y][x] = -1;
                     enemyQueue.add(cells[y][x]);
@@ -223,7 +252,43 @@ public class ExtensionStrategy {
 
             }
         }
+
+
+        if (player == StatusCell.Blue) {
+            Cell special = new Cell(-1, -1);
+            Cell special2 = new Cell(n, -1);
+
+            Cell[] neighbours = new Cell[n];
+            Cell[] neighbours2 = new Cell[n];
+            for (int y = 0; y < n; y++) {
+                neighbours[y] = cells[y][0];
+                neighbours2[y] = cells[y][n - 1];
+            }
+            special.overWriteNeighbours(neighbours);
+            special2.overWriteNeighbours(neighbours2);
+            playerQueue.add(special);
+            playerQueue.add(special2);
+        }
+
+        if (player == StatusCell.Red) {
+            Cell special = new Cell(-1, -1);
+            Cell special2 = new Cell(-1, n);
+
+            Cell[] neighbours = new Cell[n];
+            Cell[] neighbours2 = new Cell[n];
+            for (int x = 0; x < n; x++) {
+
+
+                neighbours[x] = cells[0][x];
+                neighbours2[x] = cells[n - 1][x];
+            }
+            special.overWriteNeighbours(neighbours);
+            special2.overWriteNeighbours(neighbours2);
+            playerQueue.add(special);
+            playerQueue.add(special2);
+        }
+    }
     }
 
 
-}
+

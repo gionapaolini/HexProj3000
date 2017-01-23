@@ -11,7 +11,9 @@ public class Cell {
     private Cell UL,UR,R,LR,LL,L; //U stands for UPPER and L and R for LEFT and RIGHT.
     private int coordXJ;
     private int coordYI;
-
+    public void overWriteNeighbours(Cell[] n){
+        neighbors = n;
+    }
     public Cell(int xCoord, int yCoord){
         status = StatusCell.Empty;
         neighbors = new Cell[6];

@@ -51,7 +51,7 @@ public class Bot extends Player{
 
         match.setBotTurn(false);
         super.makeMove(move.getX(), move.getY());
-
+        System.gc();
         System.out.println(type+" with "+maxTime+" and "+depthlvl);
     }
 

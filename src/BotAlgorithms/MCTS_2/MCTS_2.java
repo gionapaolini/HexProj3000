@@ -16,6 +16,7 @@ import java.util.logging.Logger;
  */
 public class MCTS_2 implements Strategy{
     private final static Logger log = Logger.getLogger( MCTS_2.class.getName() );
+    private final int depthLevel;
 
     private boolean extensionStrategy;
     private StatusCell ally;
@@ -27,6 +28,7 @@ public class MCTS_2 implements Strategy{
 
 
     public MCTS_2(Board realBoard, StatusCell color, int maxtTime, int depthLevel, boolean ExtensionStrategy){
+        this.depthLevel = depthLevel;
         this.realBoard = realBoard;
         this.ally = color;
         if(color == StatusCell.Blue)
@@ -41,23 +43,93 @@ public class MCTS_2 implements Strategy{
         setNewRoot();
         double startTime = System.currentTimeMillis();
         n_expansion = 0;
+        if (depthLevel==1){
+            monteCarloSearch(root,startTime);
+        }else {
+            while (System.currentTimeMillis() - startTime < maxtTime) {
+
+                expansion(selection(root));
+
+            }
+        }
+        System.out.println("Expansions: "+n_expansion);
+        NodeTree_2 m = null;
+        if (depthLevel==1){ m = getBestValue();}else
+        {m = getBestMove();}
+
+
+        return m.getMove();
+
+    }
+
+    private void monteCarloSearch(NodeTree_2 root, double startTime) {
+
+        ArrayList<Move> moves = root.getState().getFreeMoves();
+        for (int i = 0; i < moves.size(); i++) {
+            NodeTree_2 newNode = new NodeTree_2(root);
+            newNode.setMove(moves.get(i));
+            n_expansion++;
+        }
+
+        int n = root.getChildren().size();
+        while (System.currentTimeMillis() - startTime < maxtTime) {
+            for (int i = 0; i < n; i++) {
+                n_expansion++;
+                simulate(root.getChildren().get(i));
+                root.getChildren().get(i).incrementGame();
+            }
+        }
+
+    }
+
+    private Move startQuick() {
+        setNewRoot();
+        double startTime = System.currentTimeMillis();
+        n_expansion = 0;
         while (System.currentTimeMillis() - startTime <maxtTime){
             expansion(selection(root));
 
         }
         System.out.println("Expansions: "+n_expansion);
 
+        NodeTree_2 m = getMostSimulations();
+        NodeTree_2 m2 = getBestValue();
 
-        return getBestMove().getMove();
+        System.out.println("Moves to choose:");
+        System.out.println(m);
+        System.out.println(m2);
+
+        while (m == null){
+            expansion(selection(root));
+            m = getMostSimulations();
+        }
+
+        return m.getMove();
 
     }
 
-    public NodeTree_2 getBestMoveMarcus(){
+
+    public NodeTree_2 getMostSimulations(){
         NodeTree_2 bestNode = null;
         double bestValue = -999999999;
         for(NodeTree_2 child: root.getChildren()){
 
             double value = child.getGames();
+            if(value>bestValue) {
+                bestNode = child;
+                bestValue = value;
+            }
+        }
+        lastMove = bestNode;
+        return bestNode;
+    }
+
+    public NodeTree_2 getBestValue() {
+        NodeTree_2 bestNode = null;
+        double bestValue = -999999999;
+        for(NodeTree_2 child: root.getChildren()){
+
+            double value = child.getWins()/(child.getGames()*1.0);
             if(value>bestValue) {
                 bestNode = child;
                 bestValue = value;
