@@ -21,7 +21,7 @@ public class AlphaBeta implements Strategy{
     int maxTime, iterativeValue;
     int countEval, countPrune;
     double startTime;
-
+    boolean newEval = true;
 
 
     public AlphaBeta(Board realBoard, StatusCell color, int maxtTime, int depthLevel){
@@ -110,7 +110,8 @@ public class AlphaBeta implements Strategy{
         }
         if(node.getDepth()==iterativeValue){
             countEval ++;
-            evaluation(node);
+            if (newEval) evaluation(node);
+            else evaluationOld(node);
             setNewValue(node.getParent());
         }
         if(node.getDepth()<iterativeValue-1){
@@ -161,9 +162,9 @@ public class AlphaBeta implements Strategy{
     public static float evaluationOld(NodeTree node){
         float ratio = 0;
         if(node .getColor() == StatusCell.Blue) {
-            int[] horizontal = new int[10];
+            int[] horizontal = new int[node.getState().getGrid().length];
             //Getting #horizontal
-            for (int j = 0; j < 10 ; j++) {
+            for (int j = 0; j < node.getState().getGrid().length ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
                         if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Blue) {
@@ -172,9 +173,9 @@ public class AlphaBeta implements Strategy{
                     }
                 }
             }
-            int[] vertical = new int[10];
+            int[] vertical = new int[node.getState().getGrid().length];
             //Getting #vertical
-            for (int j = 0; j < 10 ; j++) {
+            for (int j = 0; j < node.getState().getGrid().length ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
                         if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Blue) {
@@ -186,9 +187,9 @@ public class AlphaBeta implements Strategy{
             System.out.println("DRatio Hor " + (getMax(horizontal)) + " Ver " + (getMax(vertical)));
             ratio = (float)(getMax(horizontal)) / (float)(getMax(vertical));
         }else {
-            int[] horizontal = new int[10];
+            int[] horizontal = new int[node.getState().getGrid().length];
             //Getting #horizontal
-            for (int j = 0; j < 10 ; j++) {
+            for (int j = 0; j < node.getState().getGrid().length ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
                         if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Red) {
@@ -197,7 +198,7 @@ public class AlphaBeta implements Strategy{
                     }
                 }
             }
-            int[] vertical = new int[10];
+            int[] vertical = new int[node.getState().getGrid().length];
             //Getting #vertical
             for (int j = 0; j < 10 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {

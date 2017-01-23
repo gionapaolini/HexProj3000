@@ -73,15 +73,24 @@ public class ExtensionStrategy {
     public ExtensionStrategy(ArrayList<Move> freeMoves, Board b, StatusCell player){
         this.board = b;
         Cell[][] cells = b.getGrid();
-         n = b.getSize();
+        n = b.getSize();
 
         boolean[][] freeMove = new boolean[n][n];
         weights = new int[n][n];
         //distance to player
         int[][] disttancePlayer = new int[n][n];
         boolean[][] visitedPlayer = new boolean[n][n];
+        StatusCell playerInitiative = player;
 
-
+        int initivativeValue=0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                initivativeValue += cells[i][j].getStatus().getInt();
+            }
+        }
+        if (initivativeValue>0) playerInitiative = StatusCell.Blue;
+        if (initivativeValue<0) playerInitiative = StatusCell.Red;
+        if (initivativeValue==0) playerInitiative = player;
 
         int[][] disttanceEnemy = new int[n][n];
         boolean[][] visitedEnemy = new boolean[n][n];
@@ -111,8 +120,10 @@ public class ExtensionStrategy {
             for (int y = 0; y < n; y++) {
                 //if ( disttancePlayer[x][y] == 0) disttancePlayer[x][y] = -1;
                 //if ( disttanceEnemy[x][y] == 0) disttanceEnemy[x][y] = -1;
-                disttancePlayer[x][y] = Math.abs(disttancePlayer[x][y]-2);
-                disttanceEnemy[x][y] = Math.abs(disttanceEnemy[x][y]-3);
+
+                disttancePlayer[x][y] = Math.abs(disttancePlayer[x][y] - 2);
+                disttanceEnemy[x][y] = Math.abs(disttanceEnemy[x][y] - 3);
+
                 //if ( disttancePlayer[x][y] != -1) disttancePlayer[x][y] = Math.abs(disttancePlayer[x][y]-2);
                 //if ( disttanceEnemy[x][y] != -1) disttanceEnemy[x][y] = Math.abs(disttanceEnemy[x][y]-3);
             }
@@ -144,8 +155,9 @@ public class ExtensionStrategy {
         //calulating sum
         for (int x = 0; x < n; x++) {
             for (int y = 0; y < n; y++) {
-
-                int sum = disttancePlayer[x][y] + disttanceEnemy[x][y];
+                int sum=0;
+                if (playerInitiative==player) {  sum= disttancePlayer[x][y];}
+                else {sum= disttanceEnemy[x][y];}
 
                 if (sum > max) max = sum;
 
