@@ -236,16 +236,24 @@ public class AlphaBeta implements Strategy{
                     }
                 }
             }
+            for(int i=0;i<horizontal.length;i++){
+                if(blocks[i]>0){
+                    horizontal[i]=0;
+                }
+
+            }
             System.out.println("DRatio Hor " + horizontal[getMax(horizontal)] + " Ver " + vertical[getMax(vertical)]);
             System.out.println("N_Block: "+blocks[getMax(horizontal)]);
+            /*
             if(blocks[getMax(horizontal)]==0)
                 blocks[getMax(horizontal)]=1;
             else
                 blocks[getMax(horizontal)]*=5;
 
-            //esddd
+            */
 
-            float horizontalVal = (float)(horizontal[getMax(horizontal)]) / blocks[getMax(horizontal)];
+            //float horizontalVal = (float)(horizontal[getMax(horizontal)]) / blocks[getMax(horizontal)];
+            float horizontalVal = (float) horizontal[getMax(horizontal)];
             ratio = horizontalVal / vertical[getMax(vertical)];
         }else {
             int[] horizontal = new int[node.getState().getGrid().length-1];
@@ -279,12 +287,21 @@ public class AlphaBeta implements Strategy{
                     }
                 }
             }
+            for(int i=0;i<vertical.length;i++){
+                if(blocks[i]>0){
+                    vertical[i]=0;
+                }
+
+            }
+            /*
             if(blocks[getMax(vertical)]==0)
                 blocks[getMax(vertical)]=1;
             else
                 blocks[getMax(vertical)]*=5;
+                */
 
-            float verticalVal = (float)(vertical[getMax(vertical)]) / blocks[getMax(vertical)];
+            //float verticalVal = (float)(vertical[getMax(vertical)]) / blocks[getMax(vertical)];
+            float verticalVal = (float) vertical[getMax(vertical)];
         //    System.out.println("DRatio Hor " + horizontal[getMax(horizontal)] + " Ver " + vertical[getMax(vertical)]);
           //  System.out.println("N_Block: "+blocks[getMax(vertical)]);
 
