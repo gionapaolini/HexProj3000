@@ -158,8 +158,8 @@ public class LayerView extends JPanel{
                     //draw from currrent lastlayerleftAndRight to parent left and right a polygon!!!
                     int[] Xpoints = new int[4];
                     int[] Ypoints = new int[4];
-                    Xpoints[0] = valuePair[0];
-                    Xpoints[1] = valuePair[1];
+                    Xpoints[0] = (valuePair[1]+valuePair[0])/2;
+                    Xpoints[1] = (valuePair[1]+valuePair[0])/2;
                     Xpoints[2] = lastLayerRight;
                     Xpoints[3] = lastLayerLeft;
 

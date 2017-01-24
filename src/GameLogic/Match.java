@@ -435,7 +435,7 @@ public class Match {
 
     public void evaluate() {
         int[] value = MaxFlow.flow(board);
-        System.out.print("BlueFlow: " + value[0]);
-        System.out.print("RedFlow: " + value[1]);
+        System.out.println("BlueFlow: " + value[0]);
+        System.out.println("RedFlow: " + value[1]);
     }
 }

@@ -1,14 +1,13 @@
 package BotAlgorithms.MCTS_2;
 
 import BotAlgorithms.ExtensionStrategy;
-import BotAlgorithms.MCTS.NodeTree;
 import BotAlgorithms.Strategy;
 import EnumVariables.StatusCell;
 import GameLogic.Board;
+import GameLogic.Cell;
 import GameLogic.Move;
 
 import java.util.ArrayList;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
@@ -26,6 +25,12 @@ public class MCTS_2 implements Strategy{
     private NodeTree_2 root;
     private NodeTree_2 lastMove;
 
+    int[][] blueWinboard;
+    int[][] bluePlayboard;
+
+    int[][] redWinboard;
+    int[][] redPlayboard;
+
 
     public MCTS_2(Board realBoard, StatusCell color, int maxtTime, int depthLevel, boolean ExtensionStrategy){
         this.depthLevel = depthLevel;
@@ -37,10 +42,21 @@ public class MCTS_2 implements Strategy{
             enemy = StatusCell.Blue;
         this.maxtTime = maxtTime;
         this.extensionStrategy = ExtensionStrategy;
+
+        int s = realBoard.getSize();
+
+        this.blueWinboard = new int[s][s];
+        this.bluePlayboard = new int[s][s];
+        this.redWinboard = new int[s][s];
+        this.redPlayboard = new int[s][s];
+
+
+
     }
 
     public Move start(){
         setNewRoot();
+        resetRave();
         double startTime = System.currentTimeMillis();
         n_expansion = 0;
         if (depthLevel==1){
@@ -52,6 +68,7 @@ public class MCTS_2 implements Strategy{
 
             }
         }
+        printTree(root);
         System.out.println("Expansions: "+n_expansion);
         NodeTree_2 m = null;
         if (depthLevel==1){ m = getBestValue();}else
@@ -62,7 +79,27 @@ public class MCTS_2 implements Strategy{
 
     }
 
+    private void printTree(NodeTree_2 root) {
+
+        System.out.println(" WINS/TOTAL: "+root.getWins()+"/"+root.getGames());
+        printChild(root);
+        System.out.println("Root: "+root.getGames());
+    }
+
+    private void printChild(NodeTree_2 leaf) {
+        for(NodeTree_2 nodeTree: leaf.getChildren()) {
+            for (int i = 0; i < nodeTree.getDepth(); i++) {
+                System.out.print("-- ");
+            }
+            System.out.println(" WINS/TOTAL: "+nodeTree.getWins()+"/"+nodeTree.getGames());
+            if(nodeTree.getChildren().size()>0){
+                printChild(nodeTree);
+            }
+        }
+    }
+
     private void monteCarloSearch(NodeTree_2 root, double startTime) {
+
 
         ArrayList<Move> moves = root.getState().getFreeMoves();
         for (int i = 0; i < moves.size(); i++) {
@@ -75,11 +112,19 @@ public class MCTS_2 implements Strategy{
         while (System.currentTimeMillis() - startTime < maxtTime) {
             for (int i = 0; i < n; i++) {
                 n_expansion++;
-                simulate(root.getChildren().get(i));
+                simulateQuick(root.getChildren().get(i));
                 root.getChildren().get(i).incrementGame();
             }
         }
 
+    }
+
+    private void resetRave() {
+        int s = this.realBoard.getSize();
+        this.blueWinboard = new int[s][s];
+        this.bluePlayboard = new int[s][s];
+        this.redWinboard = new int[s][s];
+        this.redPlayboard = new int[s][s];
     }
 
     private Move startQuick() {
@@ -167,7 +212,10 @@ public class MCTS_2 implements Strategy{
         NodeTree_2 bestNode = node;
         double bestValue = -999999999;
         for(NodeTree_2 child: node.getChildren()){
-            double value = UCB1(child);
+
+            double value;
+            if (depthLevel==2) value = rave(child);
+                else value = UCB1(child);
             //log.info(child.toString() + " UCB1: " + value);
             if(value>bestValue) {
                 bestNode = child;
@@ -175,6 +223,51 @@ public class MCTS_2 implements Strategy{
             }
         }
         return selection(bestNode);
+    }
+
+    private double rave(NodeTree_2 node) {
+        Move m = node.getMove();
+        int y = m.getY();
+        int x = m.getX();
+
+        int[][] wins= redWinboard; //= new int[0][];
+        int[][] plays= redPlayboard;// = new int[0][];
+        StatusCell color = node.getColor();
+
+        if (color==StatusCell.Blue) {
+            wins = blueWinboard;
+            plays = bluePlayboard;
+        } else if (color==StatusCell.Red) {
+            wins = redWinboard;
+            plays = redPlayboard;
+        } else if (color==StatusCell.Empty) return 0;
+        if (ally ==StatusCell.Empty) return 0;
+
+        float vi = (float) node.getWins() / node.getGames();
+        float vi2 = (float) wins[y][x] / plays[y][x];
+
+
+        double beta = betaFunction(node.getGames(),plays[y][x]);
+        int np = node.getGames();
+        int ni = node.getParent().getGames();
+        float a = 0.85f;
+        double C = Math.sqrt(0.04);
+       // if(vi>a)
+        //    C = 0;
+        //System.out.println("1-beta * :" + vi + " beta*: " + vi2 + " val: " +  C * Math.sqrt(Math.log(ni)/np));
+
+        return (1-beta)*vi+beta*vi2 + C * Math.sqrt(Math.log(ni)/np);
+
+
+    }
+
+    private double betaFunction(int games, int raveGames) {
+        double nominator = raveGames;
+        double denominator = games+raveGames+4*0.12*games*raveGames;
+        double val = nominator/denominator;
+        System.out.println("games:" + games + " raveGames: " + raveGames + " val: " + val);
+
+        return val;
     }
 
     public void setNewRoot(){
@@ -221,7 +314,7 @@ public class MCTS_2 implements Strategy{
         newNode.setMove(es.getSuggestedMove(moves));
         n_expansion++;
         if (!newNode.isWinningMove() && !newNode.isLosingMove()){
-            simulate(newNode);
+            simulateQuick(newNode);
         }
         newNode.incrementGame();
     }
@@ -235,19 +328,21 @@ public class MCTS_2 implements Strategy{
             newNode.setMove(move);
             n_expansion++;
             if (!newNode.isWinningMove() && !newNode.isLosingMove() && !newNode.isDeadCell()){
-                simulate(newNode);
+                if (depthLevel==2) simulateQuick(newNode); else
+                simulateQuick(newNode);
             }else {
                 if(!newNode.isDeadCell()) {
                     if(newNode.getColor() == ally){
                         if(newNode.isWinningMove())
-                            newNode.incrementWin(10);
+                            newNode.incrementWin(1,true);
+
                         else
-                            newNode.incrementWin(5);
+                            newNode.incrementWin(1, true);
                     }else {
                         if (newNode.isWinningMove())
-                            newNode.incrementWin(-10);
+                            newNode.incrementWin(1, false);
                         else
-                            newNode.incrementWin(-5);
+                            newNode.incrementWin(1, false);
                     }
                 }
             }
@@ -256,15 +351,15 @@ public class MCTS_2 implements Strategy{
             if(!node.isDeadCell()) {
                 if(node.getColor() == ally){
                     if(node.isWinningMove())
-                        node.incrementWin(10);
+                        node.incrementWin(1, true);
                     else
-                        node.incrementWin(5);
+                        node.incrementWin(1, true);
                 }else {
                     if (node.isWinningMove())
-                        node.incrementWin(-10);
+                        node.incrementWin(1, false);
 
                     else
-                        node.incrementWin(-5);
+                        node.incrementWin(1, false);
 
                 }
             }
@@ -272,7 +367,9 @@ public class MCTS_2 implements Strategy{
         }
     }
 
-    public void simulate(NodeTree_2 node){
+
+
+    public void simulateQuick(NodeTree_2 node){
         StatusCell current;
         if(node.getColor() == StatusCell.Blue)
             current = StatusCell.Red;
@@ -297,11 +394,97 @@ public class MCTS_2 implements Strategy{
             copy.putStone(move.getX(),move.getY(),current);
         }
 
-        if(copy.hasWon(ally))
-            node.incrementWin(1);
-        else
-            node.incrementWin(0);
+        if(copy.hasWon(ally)) {
+            node.incrementWin(1, node.getColor()==ally);
+            //rave(copy, ally, true);
+            //rave(copy,enemy,false);
+        }
+        else {
+            node.incrementWin(1, node.getColor()!=ally);
+            //rave(copy, ally, false);
+            //rave(copy,enemy,true);
+        }
 
+    }
+
+    public void simulateRave(NodeTree_2 node){
+        StatusCell current;
+
+
+
+
+
+
+        if(node.getColor() == StatusCell.Blue)
+            current = StatusCell.Red;
+        else
+            current = StatusCell.Blue;
+
+
+
+        Board copy = node.getState().getCopy();
+        ArrayList<Move> freeMoves = copy.getFreeMoves();
+
+        if(copy.hasWon(ally)) {
+            node.incrementWin(1, node.getColor()==ally);
+            rave(copy, ally, true);
+            rave(copy,enemy,false);
+            return;
+        } else if (copy.hasWon(enemy)){
+            node.incrementWin(1, node.getColor()!=ally);
+            rave(copy, ally, false);
+            rave(copy,enemy,true);
+            return;
+        }
+
+        while (true){
+            Move move = freeMoves.remove((int)(Math.random()*freeMoves.size()));
+            copy.putStone(move.getX(),move.getY(),current);
+
+            if(copy.hasWon(ally)) {
+                node.incrementWin(1, node.getColor()==ally);
+                rave(copy, ally, true);
+                rave(copy,enemy,false);
+                return;
+            } else if (copy.hasWon(enemy)){
+                node.incrementWin(1, node.getColor()!=ally);
+                rave(copy, ally, false);
+                rave(copy,enemy,true);
+                return;
+            }
+
+        }
+
+    }
+
+
+    private void rave(Board copy, StatusCell ally, boolean b) {
+        Cell[][] cells = copy.getGrid();
+        int s = copy.getSize();
+        int[][] wins = new int[0][];
+        int[][] plays = new int[0][];
+
+        if (ally==StatusCell.Blue) {
+            wins = blueWinboard;
+            plays = bluePlayboard;
+        }
+        if (ally==StatusCell.Red) {
+            wins = redWinboard;
+            plays = redPlayboard;
+        }
+        if (ally ==StatusCell.Empty) return;
+
+
+        for (int i = 0; i < s; i++) {
+            for (int j = 0; j < s; j++) {
+                if (cells[i][j].getStatus() == ally) {
+                    if (b) {
+                        wins[i][j]++;
+                    }
+                        plays[i][j]++;
+                }
+            }
+        }
     }
 
 
@@ -310,10 +493,10 @@ public class MCTS_2 implements Strategy{
         float vi = (float) node.getWins() / node.getGames();
         int np = node.getGames();
         int ni = node.getParent().getGames();
-        float a = 0.85f;
-        double C = Math.sqrt(2);
-        if(vi>a)
-           C = 0;
+        float a = 0.65f;
+        double C = Math.sqrt(0.14);
+       // if(vi>a)
+          //C = 0;
 
         return vi + C * Math.sqrt(Math.log(ni)/np);
     }
