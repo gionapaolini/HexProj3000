@@ -243,6 +243,8 @@ public class AlphaBeta implements Strategy{
             else
                 blocks[getMax(horizontal)]*=5;
 
+            //esddd
+
             float horizontalVal = (float)(horizontal[getMax(horizontal)]) / blocks[getMax(horizontal)];
             ratio = horizontalVal / vertical[getMax(vertical)];
         }else {
