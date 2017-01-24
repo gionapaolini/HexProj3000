@@ -4,6 +4,7 @@ import BotAlgorithms.MCTS_2.NodeTree_2;
 import BotAlgorithms.Strategy;
 import EnumVariables.StatusCell;
 import GameLogic.Board;
+import GameLogic.Cell;
 import GameLogic.MaxFlow;
 import GameLogic.Move;
 
@@ -115,7 +116,7 @@ public class AlphaBeta implements Strategy{
             }
         }
         if(node.getDepth()==iterativeValue){
-            node.setValue(evaluationOld(node));
+            node.setValue(evaluationOld(node, ally));
             backTrack(node);
             countEval++;
         }
@@ -152,7 +153,7 @@ public class AlphaBeta implements Strategy{
         if(node.getDepth()==iterativeValue){
             countEval ++;
             if (flowEvaluation) evaluation(node);
-            else node.setValue(evaluationOld(node));
+            else node.setValue(evaluationOld(node, ally));
             setNewValue(node.getParent());
         }
         if(node.getDepth()<iterativeValue-1){
@@ -200,20 +201,30 @@ public class AlphaBeta implements Strategy{
         }
     }
 
-    public static float evaluationOld(NodeTree node){
+    public static float evaluationOld(NodeTree node,StatusCell color){
         float ratio = 0;
-        if(node.getColor() == StatusCell.Blue) {
-            int[] horizontal = new int[node.getState().getGrid().length-1];
+        Cell[][] state = node.getState().getGrid();
+        if(color == StatusCell.Blue) {
+            int[] horizontal = new int[state.length-1];
+            int[] blocks= new int[state.length-1];
             //Getting #horizontal
-            for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
+            for (int j = 0; j < state.length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
-                    for (int i = 0; i < node.getState().getGrid().length; i++) {
-                        if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Blue) {
+                    for (int i = 0; i <state.length; i++) {
+                        if (state[jj][i].getStatus() == StatusCell.Blue) {
                             horizontal[j]++;
+                        }
+                        if(j==jj) {
+                            if ((j + 1 <= state.length - 1) && (state[j][i].getStatus() == StatusCell.Red && state[j + 1][i].getStatus() == StatusCell.Red))
+                                blocks[j]++;
+                            if ((j + 1 <= state.length - 1) && (i - 1 >= 0) && (state[j][i].getStatus() == StatusCell.Red && state[j + 1][i - 1].getStatus() == StatusCell.Red))
+                                blocks[j]++;
                         }
                     }
                 }
             }
+
+
             int[] vertical = new int[node.getState().getGrid().length-1];
             //Getting #vertical
             for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
@@ -225,10 +236,18 @@ public class AlphaBeta implements Strategy{
                     }
                 }
             }
-            //System.out.println("DRatio Hor " + (getMax(horizontal)) + " Ver " + (getMax(vertical)));
-            ratio = (float)(getMax(horizontal)) / (float)(getMax(vertical));
+            System.out.println("DRatio Hor " + horizontal[getMax(horizontal)] + " Ver " + vertical[getMax(vertical)]);
+            System.out.println("N_Block: "+blocks[getMax(horizontal)]);
+            if(blocks[getMax(horizontal)]==0)
+                blocks[getMax(horizontal)]=1;
+            else
+                blocks[getMax(horizontal)]*=5;
+
+            float horizontalVal = (float)(horizontal[getMax(horizontal)]) / blocks[getMax(horizontal)];
+            ratio = horizontalVal / vertical[getMax(vertical)];
         }else {
             int[] horizontal = new int[node.getState().getGrid().length-1];
+
             //Getting #horizontal
             for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
@@ -240,27 +259,43 @@ public class AlphaBeta implements Strategy{
                 }
             }
             int[] vertical = new int[node.getState().getGrid().length-1];
+            int[] blocks= new int[state.length-1];
             //Getting #vertical
             for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
                         if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Red) {
                             vertical[j]++;
+                            if(jj==j) {
+                                if ((j + 1 <= state.length - 1) && (state[i][j].getStatus() == StatusCell.Red && state[i][j + 1].getStatus() == StatusCell.Red))
+                                    blocks[j]++;
+                                if ((j + 1 <= state.length - 1) && (i - 1 >= 0) && (state[i][j].getStatus() == StatusCell.Red && state[i - 1][j + 1].getStatus() == StatusCell.Red))
+                                    blocks[j]++;
+                            }
+
                         }
                     }
                 }
             }
-            //System.out.println("DRatio Hor " + (getMax(horizontal)) + " Ver " + (getMax(vertical)));
-            ratio = (float)(getMax(vertical)) / (float)getMax(horizontal);
+            if(blocks[getMax(vertical)]==0)
+                blocks[getMax(vertical)]=1;
+            else
+                blocks[getMax(vertical)]*=5;
+
+            float verticalVal = (float)(vertical[getMax(vertical)]) / blocks[getMax(vertical)];
+        //    System.out.println("DRatio Hor " + horizontal[getMax(horizontal)] + " Ver " + vertical[getMax(vertical)]);
+          //  System.out.println("N_Block: "+blocks[getMax(vertical)]);
+
+            ratio = verticalVal /horizontal[getMax(horizontal)];
         }
         return ratio;
     }
 
     public static int getMax(int[] arr){
-        int max = arr[0];
+        int max = 0;
         for (int i = 1; i < arr.length; i++) {
             if (arr[i] > max) {
-                max = arr[i];
+                max = i;
             }
         }
         return max;

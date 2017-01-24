@@ -1,5 +1,7 @@
 package Graphics;
 
+import BotAlgorithms.AlphaBeta.AlphaBeta;
+import BotAlgorithms.AlphaBeta.NodeTree;
 import EnumVariables.GameType;
 import EnumVariables.StatusCell;
 import GameLogic.Match;
@@ -76,11 +78,13 @@ public class ControlPanel extends JPanel {
         pauseButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
+
                 match.pause();
                 if(match.isPaused())
                     pauseButton.setText("Unpause");
                 else
                     pauseButton.setText("Pause");
+
             }
         });
 
