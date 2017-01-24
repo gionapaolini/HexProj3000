@@ -4,6 +4,7 @@ import GameLogic.Cell;
 import EnumVariables.StatusCell;
 import GameLogic.Match;
 import GameLogic.Observer;
+import org.w3c.dom.css.RGBColor;
 
 import javax.swing.*;
 import java.awt.*;
@@ -30,7 +31,7 @@ public class BoardGraphics extends JPanel implements Observer{
     private int x,y;
     public BoardGraphics(Match match){
         grid = match.getBoard().getGrid();
-
+        this.setBackground(Color.PINK);
         this.setSize(new Dimension(600,400));
         this.setPreferredSize(new Dimension(600,400));
         this.match = match;

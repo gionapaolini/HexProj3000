@@ -24,6 +24,7 @@ public class GameGui extends JPanel implements Observer{
 
     public GameGui(BoardGraphics graphics, Match match, UserInterface userInterface,JFrame frame){
         mainFrame = frame;
+        setBackground(Color.darkGray);
         setLayout(new MigLayout());
         openHistory = new JButton("<html><center>H<br>i<br>s<br>t<br>o<br>r<br>y</center></html>");
         openHistory.setSize(new Dimension(5,400));

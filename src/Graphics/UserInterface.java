@@ -4,6 +4,7 @@ import GameLogic.Board;
 import GameLogic.Match;
 
 import javax.swing.*;
+import java.awt.*;
 
 /**
  * Created by giogio on 1/12/17.
@@ -26,7 +27,10 @@ public class UserInterface {
         menuGUI = new MenuGUI(mainFrame,this);
         mainFrame.add(menuGUI);
         mainFrame.pack();
+        mainFrame.setBackground(Color.PINK);
+        mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
+
     }
     public void openGame(){
         Match match = menuGUI.getMatch();
@@ -36,6 +40,7 @@ public class UserInterface {
         mainFrame.add(gameGui);
         mainFrame.pack();
         mainFrame.setVisible(true);
+        mainFrame.setLocationRelativeTo(null);
         match.startMatch();
     }
     public void goToSetting(){
@@ -43,6 +48,9 @@ public class UserInterface {
         mainFrame.remove(gameGui);
         mainFrame.add(menuGUI);
         mainFrame.pack();
+        mainFrame.setLocationRelativeTo(null);
+
+
     }
 
     public GameGui getGameGui() {

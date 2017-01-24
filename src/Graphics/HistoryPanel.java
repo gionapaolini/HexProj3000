@@ -25,6 +25,7 @@ public class HistoryPanel extends JPanel{
         pane = new JScrollPane(historyArea);
         pane.setSize(new Dimension(150,380));
         pane.setPreferredSize(new Dimension(150,380));
+        this.setBackground(Color.PINK);
 
         closeHistory = new JButton("Close History");
         this.add(pane,"span");

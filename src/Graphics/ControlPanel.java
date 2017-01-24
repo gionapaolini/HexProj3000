@@ -34,7 +34,7 @@ public class ControlPanel extends JPanel {
     public ControlPanel(Match match, UserInterface userInterface){
         setSize(new Dimension(200,400));
         setPreferredSize(new Dimension(200,400));
-        setBackground(Color.GREEN);
+        setBackground(Color.PINK);
         setLayout(new MigLayout("","center"));
         add(playerText,"span");
         add(timeText,"span");

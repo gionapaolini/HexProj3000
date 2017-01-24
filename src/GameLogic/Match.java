@@ -8,10 +8,12 @@ import EnumVariables.StatusCell;
 import GameLogic.History.History;
 import GameLogic.History.RecordMove;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -200,6 +202,12 @@ public class Match {
             System.out.println("WON"+players[currentPlayer].getColor());
             won = true;
             pause();
+            if(players[currentPlayer].getColor()==StatusCell.Blue){
+                loadMexico();
+            }else{
+                loadTrump();
+            }
+
         } else {
             switchPlayer();
         }
@@ -207,6 +215,43 @@ public class Match {
         System.out.println("Notified");
         evaluate();
 
+    }
+
+    public void loadTrump(){
+        String path = "trump.jpg";
+        File file = new File(path);
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JLabel label = new JLabel(new ImageIcon(image));
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.getContentPane().add(label);
+        f.pack();
+        f.setLocationRelativeTo(null);
+        f.setVisible(true);
+    }
+
+    public void loadMexico(){
+        String path = "mexico.jpg";
+        File file = new File(path);
+        BufferedImage image = null;
+        try {
+            image = ImageIO.read(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        JLabel label = new JLabel(new ImageIcon(image));
+        JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        f.getContentPane().add(label);
+        f.pack();
+        f.setLocationRelativeTo(null);
+
+        f.setVisible(true);
     }
 
     public void addObserver(Observer observer){

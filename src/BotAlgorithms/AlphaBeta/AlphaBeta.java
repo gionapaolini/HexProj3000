@@ -34,7 +34,8 @@ public class AlphaBeta implements Strategy{
         this.maxTime = maxtTime;
         lastMove = null;
         iterativeValue = depthLevel;
-        flowEvaluation=false;
+        flowEvaluation=true;
+
     }
 
     public Move start(){
