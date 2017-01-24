@@ -15,16 +15,17 @@ public class NodeTree {
     private NodeTree parent;
     private ArrayList<NodeTree> children;
     private Move move;
-    private int value;
+    private float value;
     private StatusCell color;
     private Board state;
-    private boolean winningMove, losingMove, deadCell;
+    private boolean winningMove, losingMove, deadCell, expanded;
 
 
     public NodeTree(NodeTree parent, Move move){
         this.parent = parent;
         this.move = move;
         children = new ArrayList<>();
+        value = 0;
         if(parent!=null){
             parent.addChildren(this);
             if(parent.getColor()==StatusCell.Blue)
@@ -33,6 +34,8 @@ public class NodeTree {
                 color = StatusCell.Blue;
 
             state = parent.getState().getCopy();
+            state.putStone(move.getX(),move.getY(),color);
+            /*
             state.putStone(move.getX(),move.getY(),parent.getColor());
 
             if(state.hasWon(parent.getColor()))
@@ -46,8 +49,16 @@ public class NodeTree {
                 winningMove = true;
             else
                 winningMove = false;
-
+*/
         }
+    }
+
+    public boolean isExpanded() {
+        return expanded;
+    }
+
+    public void setExpanded(boolean expanded) {
+        this.expanded = expanded;
     }
 
     public int getDepth(){
@@ -72,7 +83,7 @@ public class NodeTree {
         return losingMove;
     }
 
-    public void setValue(int value) {
+    public void setValue(float value) {
         this.value = value;
     }
 
@@ -104,7 +115,7 @@ public class NodeTree {
         return move;
     }
 
-    public int getValue() {
+    public float getValue() {
         return value;
     }
 

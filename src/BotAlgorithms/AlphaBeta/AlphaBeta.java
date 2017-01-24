@@ -7,6 +7,8 @@ import GameLogic.Board;
 import GameLogic.MaxFlow;
 import GameLogic.Move;
 
+import java.util.ArrayList;
+
 /**
  * Created by giogio on 1/22/17.
  */
@@ -30,10 +32,12 @@ public class AlphaBeta implements Strategy{
             enemy = StatusCell.Blue;
         this.maxTime = maxtTime;
         lastMove = null;
+        iterativeValue = depthLevel;
+        flowEvaluation=false;
     }
 
     public Move start(){
-        iterativeValue = 1;
+        iterativeValue=1;
         setNewRoot();
         countEval = 0;
         countPrune =0;
@@ -46,7 +50,7 @@ public class AlphaBeta implements Strategy{
 
 
         System.out.println(" ");
-        printTree(root);
+       // printTree(root);
         System.out.println("EVALCOUNT: "+countEval);
         System.out.println("Pruning: "+countPrune);
 
@@ -78,10 +82,11 @@ public class AlphaBeta implements Strategy{
     }
 
     public NodeTree getBestMove(){
-        int bestValue = -9999999;
+        float bestValue = -9999999;
         NodeTree bestNode = null;
 
         for(NodeTree child: root.getChildren()){
+            System.out.println(child.getValue());
             if(child.getValue()>bestValue){
                 bestValue = child.getValue();
                 bestNode = child;
@@ -90,6 +95,45 @@ public class AlphaBeta implements Strategy{
 
         lastMove = bestNode;
         return bestNode;
+    }
+
+    public void newExpand(NodeTree node){
+        if(System.currentTimeMillis()-startTime>maxTime) {
+            return;
+        }
+        if(node.getDepth()<iterativeValue){
+            if(!prune(node)) {
+                ArrayList<Move> freeMoves = node.getState().getFreeMoves();
+                while (freeMoves.size() > 0 && System.currentTimeMillis()-startTime<maxTime) {
+                    Move move = freeMoves.remove((int) (Math.random() * freeMoves.size()));
+                    newExpand(new NodeTree(node, move));
+                }
+                if(node.getParent()!=null)
+                    backTrack(node);
+            }else {
+                countPrune++;
+            }
+        }
+        if(node.getDepth()==iterativeValue){
+            node.setValue(evaluationOld(node));
+            backTrack(node);
+            countEval++;
+        }
+    }
+
+    public void backTrack(NodeTree node){
+        if(node.getParent().getValue()==0){
+            node.getParent().setValue(node.getValue());
+            return;
+        }
+        if(node.getColor()==ally){
+            if(node.getParent().getValue()<node.getValue())
+                node.getParent().setValue(node.getValue());
+        }else {
+            if(node.getParent().getValue()>node.getValue())
+                node.getParent().setValue(node.getValue());
+        }
+
     }
 
     public void expand(NodeTree node){
@@ -108,7 +152,7 @@ public class AlphaBeta implements Strategy{
         if(node.getDepth()==iterativeValue){
             countEval ++;
             if (flowEvaluation) evaluation(node);
-            else evaluationOld(node);
+            else node.setValue(evaluationOld(node));
             setNewValue(node.getParent());
         }
         if(node.getDepth()<iterativeValue-1){
@@ -139,10 +183,10 @@ public class AlphaBeta implements Strategy{
         if(node.getDepth()==0)
             return false;
         if(node.getColor()==ally){
-            if(node.getValue()>node.getParent().getValue())
+            if(node.getValue()<node.getParent().getValue())
                 return true;
         }else {
-            if(node.getValue()<node.getParent().getValue())
+            if(node.getValue()>node.getParent().getValue())
                 return true;
         }
         return false;
@@ -158,13 +202,13 @@ public class AlphaBeta implements Strategy{
 
     public static float evaluationOld(NodeTree node){
         float ratio = 0;
-        if(node .getColor() == StatusCell.Blue) {
+        if(node.getColor() == StatusCell.Blue) {
             int[] horizontal = new int[node.getState().getGrid().length-1];
             //Getting #horizontal
             for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
-                        if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Blue) {
+                        if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Blue) {
                             horizontal[j]++;
                         }
                     }
@@ -175,7 +219,7 @@ public class AlphaBeta implements Strategy{
             for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
-                        if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Blue) {
+                        if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Blue) {
                             vertical[j]++;
                         }
                     }
@@ -189,7 +233,7 @@ public class AlphaBeta implements Strategy{
             for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
-                        if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Red) {
+                        if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Red) {
                             horizontal[j]++;
                         }
                     }
@@ -200,7 +244,7 @@ public class AlphaBeta implements Strategy{
             for (int j = 0; j < node.getState().getGrid().length-1 ; j++) {
                 for (int jj = j; jj < j + 2; jj++) {
                     for (int i = 0; i < node.getState().getGrid().length; i++) {
-                        if (node.getState().getGrid()[jj][i].getStatus() == StatusCell.Red) {
+                        if (node.getState().getGrid()[i][jj].getStatus() == StatusCell.Red) {
                             vertical[j]++;
                         }
                     }
@@ -223,7 +267,7 @@ public class AlphaBeta implements Strategy{
     }
 
     private void setNewValue(NodeTree parent){
-        int bestValue;
+        float bestValue;
         if(parent.getColor()==ally){
             bestValue=9999;
             for(NodeTree child: parent.getChildren()){
@@ -262,6 +306,11 @@ public class AlphaBeta implements Strategy{
     public void updateBoard(Board board) {
 
     }
+
+
+
+
+
 
 
 }

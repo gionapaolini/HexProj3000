@@ -237,7 +237,7 @@ public class MaxFlow {
         }
         for (int y = 1; y < n; y++) {
             if(y==9){
-                System.out.println("check 98");
+           //     System.out.println("check 98");
             }
             capacity = normalCapacity;
             if (cells[y][n-1].getStatus()==playerside||cells[y-1][n-1].getStatus()==playerside) capacity = nodeCapacity;
@@ -255,17 +255,17 @@ public class MaxFlow {
         if (cells[0][0].getStatus()==playerside&&cells[0][1].getStatus()==playerside) capacity = 999999;
         if (cells[0][0].getStatus()==playerside.opposite()||cells[0][1].getStatus()==playerside.opposite()) capacity = 0;
         Edge.connectDirected(nodes[0][0],nodes[0][1],capacity);*/
-        System.out.println(playerside);
+       // System.out.println(playerside);
         for (int y = 0; y < n; y++) {  //spalte
             for (int x = 0; x < n ; x++) { //zeile
-                System.out.print("YX: " + y + " " + x +":" );
+               // System.out.print("YX: " + y + " " + x +":" );
                 for (int i = 0; i < nodes[y][x].edges.size(); i++) {
-                    System.out.print(nodes[y][x].edges.get(i).capacity + " ");
+                  //  System.out.print(nodes[y][x].edges.get(i).capacity + " ");
 
                 }
 
             }
-            System.out.println();
+           // System.out.println();
         }
 
 
