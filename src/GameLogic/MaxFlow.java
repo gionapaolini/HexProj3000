@@ -255,6 +255,9 @@ public class MaxFlow {
         if (cells[0][0].getStatus()==playerside&&cells[0][1].getStatus()==playerside) capacity = 999999;
         if (cells[0][0].getStatus()==playerside.opposite()||cells[0][1].getStatus()==playerside.opposite()) capacity = 0;
         Edge.connectDirected(nodes[0][0],nodes[0][1],capacity);*/
+
+
+      /*
         System.out.println(playerside);
         for (int y = 0; y < n; y++) {  //spalte
             for (int x = 0; x < n ; x++) { //zeile
@@ -267,7 +270,7 @@ public class MaxFlow {
             }
             System.out.println();
         }
-
+        */
 
         return start;
     }

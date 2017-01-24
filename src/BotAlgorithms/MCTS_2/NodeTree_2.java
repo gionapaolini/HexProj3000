@@ -107,10 +107,10 @@ public class NodeTree_2 implements HTNode {
         return deadCell;
     }
 
-    public void incrementWin(int wins){
-        this.wins+=wins;
+    public void incrementWin(int wins, boolean b){
+        if (b) this.wins+=wins;
         if(parent!=null)
-            parent.incrementWin(wins);
+            parent.incrementWin(wins, !b);
     }
     public void incrementGame(){
         this.games+=1;
