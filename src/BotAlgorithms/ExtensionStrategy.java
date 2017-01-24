@@ -173,7 +173,7 @@ public class ExtensionStrategy {
                 weightSum += weights[x][y];
             }
         }
-
+        /*
         System.out.println("EnemyDistances");
         for (int[] arr : disttanceEnemy) {
             System.out.println(Arrays.toString(arr));
@@ -188,7 +188,7 @@ public class ExtensionStrategy {
         System.out.println("weights");
         for (int[] w : weights) {
             System.out.println(Arrays.toString(w));
-        }
+        }*/
         System.out.println("Freemove: " + freeMove.length + " " );
       /*  */
     }

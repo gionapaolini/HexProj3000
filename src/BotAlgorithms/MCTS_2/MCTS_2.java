@@ -254,6 +254,7 @@ public class MCTS_2 implements Strategy{
         double C = Math.sqrt(0.04);
        // if(vi>a)
         //    C = 0;
+        //System.out.println("1-beta * :" + vi + " beta*: " + vi2 + " val: " +  C * Math.sqrt(Math.log(ni)/np));
 
         return (1-beta)*vi+beta*vi2 + C * Math.sqrt(Math.log(ni)/np);
 
@@ -262,7 +263,7 @@ public class MCTS_2 implements Strategy{
 
     private double betaFunction(int games, int raveGames) {
         double nominator = raveGames;
-        double denominator = games+raveGames+4*0.04*games*raveGames;
+        double denominator = games+raveGames+4*0.12*games*raveGames;
         double val = nominator/denominator;
         System.out.println("games:" + games + " raveGames: " + raveGames + " val: " + val);
 
@@ -327,13 +328,14 @@ public class MCTS_2 implements Strategy{
             newNode.setMove(move);
             n_expansion++;
             if (!newNode.isWinningMove() && !newNode.isLosingMove() && !newNode.isDeadCell()){
-                if (depthLevel==2) simulateRave(newNode); else
+                if (depthLevel==2) simulateQuick(newNode); else
                 simulateQuick(newNode);
             }else {
                 if(!newNode.isDeadCell()) {
                     if(newNode.getColor() == ally){
                         if(newNode.isWinningMove())
                             newNode.incrementWin(1,true);
+
                         else
                             newNode.incrementWin(1, true);
                     }else {
@@ -364,6 +366,8 @@ public class MCTS_2 implements Strategy{
             node.incrementGame();
         }
     }
+
+
 
     public void simulateQuick(NodeTree_2 node){
         StatusCell current;
@@ -405,6 +409,12 @@ public class MCTS_2 implements Strategy{
 
     public void simulateRave(NodeTree_2 node){
         StatusCell current;
+
+
+
+
+
+
         if(node.getColor() == StatusCell.Blue)
             current = StatusCell.Red;
         else
@@ -414,6 +424,18 @@ public class MCTS_2 implements Strategy{
 
         Board copy = node.getState().getCopy();
         ArrayList<Move> freeMoves = copy.getFreeMoves();
+
+        if(copy.hasWon(ally)) {
+            node.incrementWin(1, node.getColor()==ally);
+            rave(copy, ally, true);
+            rave(copy,enemy,false);
+            return;
+        } else if (copy.hasWon(enemy)){
+            node.incrementWin(1, node.getColor()!=ally);
+            rave(copy, ally, false);
+            rave(copy,enemy,true);
+            return;
+        }
 
         while (true){
             Move move = freeMoves.remove((int)(Math.random()*freeMoves.size()));
@@ -472,7 +494,7 @@ public class MCTS_2 implements Strategy{
         int np = node.getGames();
         int ni = node.getParent().getGames();
         float a = 0.65f;
-        double C = Math.sqrt(0.04);
+        double C = Math.sqrt(0.14);
        // if(vi>a)
           //C = 0;
 
