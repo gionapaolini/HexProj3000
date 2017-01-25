@@ -27,7 +27,6 @@ public class UserInterface {
         menuGUI = new MenuGUI(mainFrame,this);
         mainFrame.add(menuGUI);
         mainFrame.pack();
-        mainFrame.setBackground(Color.PINK);
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
 

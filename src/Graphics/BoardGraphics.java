@@ -31,7 +31,7 @@ public class BoardGraphics extends JPanel implements Observer{
     private int x,y;
     public BoardGraphics(Match match){
         grid = match.getBoard().getGrid();
-        this.setBackground(Color.PINK);
+        this.setBackground(Color.lightGray);
         this.setSize(new Dimension(600,400));
         this.setPreferredSize(new Dimension(600,400));
         this.match = match;
@@ -120,12 +120,12 @@ public class BoardGraphics extends JPanel implements Observer{
                if(current && i==y & j==x){
                    g2.setColor(color);
                }else if(grid[i][j].getStatus()==StatusCell.Blue){
-                   g2.setColor(Color.BLUE);
+                   g2.setColor(Color.black);
                }else if(grid[i][j].getStatus()==StatusCell.Red){
-                    g2.setColor(Color.RED);
+                    g2.setColor(Color.white);
                }
                else {
-                   g2.setColor(Color.gray);
+                   g2.setColor(Color.lightGray);
                }
                g2.fill(polyCells[i][j]);
                g2.setColor(Color.black);
@@ -233,10 +233,10 @@ public class BoardGraphics extends JPanel implements Observer{
 
 
 
-        g2.setColor(Color.RED);
+        g2.setColor(Color.white);
         g2.fillPolygon(upperSide);
         g2.fillPolygon(lowerSide);
-        g2.setColor(Color.BLUE);
+        g2.setColor(new Color(20,20,20,230));
         g2.fillPolygon(leftSide);
         g2.fillPolygon(rightSide);
 
@@ -251,9 +251,9 @@ public class BoardGraphics extends JPanel implements Observer{
             current=false;
         }
         if(match.getCurrentColorPlayer()==StatusCell.Red)
-            color = new Color(255,0,0,100);
+            color = new Color(255,255,255,200);
         else
-            color = new Color(0,0,255,100);
+            color = new Color(20,20,20, 200);
 
         if(match.isSwapRule() && match.getHistory().getNValidRecords()<=1){
             canSwap = true;

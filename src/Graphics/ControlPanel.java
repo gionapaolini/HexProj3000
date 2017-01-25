@@ -19,7 +19,7 @@ import java.io.IOException;
  * Created by giogio on 1/11/17.
  */
 public class ControlPanel extends JPanel {
-    private final JLabel playerText = new JLabel("<html>Player <font color='blue'>Blue</font> is your turn!</html>");
+    private final JLabel playerText = new JLabel("<html>Player <font color='black'>Black</font> is your turn!</html>");
     private final JLabel timeText = new JLabel("Time: 00:00:00");
     private final JButton pauseButton = new JButton("Pause");
     private final JButton undoButton = new JButton("Undo");
@@ -34,7 +34,7 @@ public class ControlPanel extends JPanel {
     public ControlPanel(Match match, UserInterface userInterface){
         setSize(new Dimension(200,400));
         setPreferredSize(new Dimension(200,400));
-        setBackground(Color.PINK);
+        setBackground(Color.lightGray);
         setLayout(new MigLayout("","center"));
         add(playerText,"span");
         add(timeText,"span");
@@ -50,14 +50,24 @@ public class ControlPanel extends JPanel {
 
     }
     public void setPlayerTurn(StatusCell color){
-        playerText.setText("<html>Player <font color='"+color+"'>"+color+"</font> is your turn!</html>");
+        String col;
+        if(color==StatusCell.Red)
+            col = "White";
+        else
+            col = "Black";
+        playerText.setText("<html>Player <font color='"+col+"'>"+col+"</font> is your turn!</html>");
 
     }
     public void setTime(TimeGame time){
         timeText.setText(time.toString());
     }
     public void setWin(StatusCell color){
-        playerText.setText("<html>Player <font color='"+color+"'>"+color+"</font> WON!</html>");
+        String col;
+        if(color==StatusCell.Red)
+            col = "White";
+        else
+            col = "Black";
+        playerText.setText("<html>Player <font color='"+col+"'>"+col+"</font> WON!</html>");
 
     }
 
