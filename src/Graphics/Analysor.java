@@ -40,12 +40,12 @@ public class Analysor extends JFrame{
         mainPanel = new JPanel(); mainPanel.setPreferredSize(new Dimension(800,600));
         this.add(mainPanel, BorderLayout.CENTER);
 
-        buttonPanel.add(chessViewButton);
+       // buttonPanel.add(chessViewButton);
         buttonPanel.add(hyperViewButton);
         buttonPanel.add(layerViewButton);
 
 
-        chessViewButton.addActionListener(e -> showChessView(userInterface));
+      //  chessViewButton.addActionListener(e -> showChessView(userInterface));
         hyperViewButton.addActionListener(e -> showHyperView(userInterface));
         layerViewButton.addActionListener(e -> showLayerView(userInterface));
 
@@ -61,7 +61,7 @@ public class Analysor extends JFrame{
         Dimension preveredSize = new Dimension(800,600);
         LayerView layer = new LayerView(ui,preveredSize);
 
-
+        layerView =layer;
         replaceMainPanel(layer);
         layer.setVisible(true);
         layer.repaint();
@@ -97,6 +97,7 @@ public class Analysor extends JFrame{
         }
        //if (chessView!=null) remove(chessView);
         if (hyperTreeView!=null) remove(hyperTreeView);
+        if (layerView!=null) remove(layerView);
         //if (nnw!=null) remove(nnw);
 
         this.add(component, BorderLayout.CENTER);

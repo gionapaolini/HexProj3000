@@ -110,9 +110,9 @@ public class ControlPanel extends JPanel {
         analisysButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (analysor == null) {
+               // if (analysor == null) {
                     analysor = new Analysor(userInterface);
-                }
+               // }
                 analysor.setVisible(!analysor.isVisible());
             }
         });

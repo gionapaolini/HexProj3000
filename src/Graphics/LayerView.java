@@ -18,6 +18,7 @@ public class LayerView extends JPanel{
     ArrayList<ArrayList<NodeTree_2>> values;
     private LinkedList<Polygon> polygones  = new LinkedList<>();;
     private HashMap<Polygon, NodeTree_2> messages = new HashMap<>(4000);
+    private NodeTree_2 root;
 
     public LayerView(UserInterface ui, Dimension preveredSize){
         super(new BorderLayout());
@@ -29,19 +30,37 @@ public class LayerView extends JPanel{
         this.preservedSize = preveredSize;
 
         userInterface = ui;
+        root = userInterface.gameGui.getMatch().getRootTreeMcts();
 
-        createTree();
 
 
 
         this.addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                for(Polygon p: polygones){
-                    if (p.contains(e.getPoint())){
-                        JOptionPane.showMessageDialog(null, messages.get(p).toString(), "Info", JOptionPane.OK_CANCEL_OPTION);
+
+                    for (Polygon p : polygones) {
+                        if (p.contains(e.getPoint())) {
+                            NodeTree_2 clickedUpon =  messages.get(p);
+                            if (e.getButton()== MouseEvent.BUTTON1) {
+                                JOptionPane.showMessageDialog(null, clickedUpon.toString(), "Info", JOptionPane.OK_CANCEL_OPTION);
+                            }
+                            if (e.getButton()== MouseEvent.BUTTON2) {
+                                root = clickedUpon;
+                                repaint();
+                            }
+
+
+                        }
                     }
+                if (e.getButton()== MouseEvent.BUTTON3) {
+                    if (root.getParent() != null) {
+                        root = root.getParent();
+                        repaint();
+                    }
+
                 }
+
 
             }
 
@@ -67,12 +86,14 @@ public class LayerView extends JPanel{
         });
     }
 
-    private void createTree() {
-        NodeTree_2 root = userInterface.gameGui.getMatch().getRootTreeMcts();
+    private void createTree(NodeTree_2 newRoot) {
+        NodeTree_2 root = newRoot;
         if (root  == null) return;
         int height = root.getHeight();
         System.out.println("Height: " + height);
-        values = new ArrayList<>(root.getHeight());
+        int difference =root.getDepth();
+
+        values = new ArrayList<>();
         for (int i = 0; i <= height; i++) {
             values.add(new ArrayList<>());
         }
@@ -80,7 +101,7 @@ public class LayerView extends JPanel{
         int bfs = breadthFirst.size();
         for (int i = 0; i <bfs; i++) {
             NodeTree_2 node = breadthFirst.get(i);
-            int depth = node.getDepth();
+            int depth = node.getDepth()-difference;
             values.get(depth).add(node);
         }
         for (int i = 0; i <values.size(); i++) {
@@ -93,14 +114,16 @@ public class LayerView extends JPanel{
         super.paintComponent(g);
         g.setColor(Color.red);
         //g.fillRect(0,0,(int)preservedSize.getWidth(),(int)preservedSize.getHeight());
+
         messages.clear();
         messages = new HashMap<>(4000);
         polygones.clear();
         polygones = new LinkedList<>();
+        createTree(root);
         double layerHeight = this.getHeight() / values.size() / 2;
         double layerWidth = this.getWidth();
         Random r = new Random();
-        createTree();
+
         Map<NodeTree_2,int[]> map = new HashMap<>(200);
         for (int i = 0; i <values.size(); i++){
             ArrayList<Integer> leftiesNew = new ArrayList<>(200);

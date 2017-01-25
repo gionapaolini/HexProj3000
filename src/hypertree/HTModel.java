@@ -9,6 +9,7 @@ package hypertree;
 
 
 import BotAlgorithms.MCTS.NodeTree;
+import BotAlgorithms.MCTS_2.NodeTree_2;
 
 import javax.swing.tree.TreeNode;
 
@@ -17,14 +18,14 @@ import javax.swing.tree.TreeNode;
  */
 class HTModel {
 
-    public NodeTree getRootNode() {
+    public NodeTree_2 getRootNode() {
         return rootNode;
     }
 
-    private NodeTree rootNode;
+    private NodeTree_2 rootNode;
     private HTModelNode root   = null; // the root of the tree's model
 
-    private double      lenght = 0.95;  // distance between node and children
+    private double      lenght = 0.4;  // distance between node and children
     private double      radius = 0.04; // radius of a node
 
 
@@ -36,7 +37,7 @@ class HTModel {
      * @param root    the root of the real tree 
      */
     HTModel(HTNode root) {
-        rootNode = (NodeTree)root;
+        rootNode = (NodeTree_2)root;
         if (root.isLeaf()) {
             this.root = new HTModelNode(root, this);
         } else {

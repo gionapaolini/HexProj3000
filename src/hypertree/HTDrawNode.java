@@ -8,6 +8,7 @@
 package hypertree;
 
 import BotAlgorithms.MCTS.NodeTree;
+import BotAlgorithms.MCTS_2.NodeTree_2;
 
 import java.awt.*;
 
@@ -109,7 +110,7 @@ class HTDrawNode {
         double dist = ((zr.x - ze.x) * (zr.x - ze.x)) +
                       ((zr.y - ze.y) * (zr.y - ze.y));
         double coeff = Math.sqrt(dist) / model.getRadius();
-        model.drawNode(zs, coeff, g,(NodeTree) node.getNode());
+        model.drawNode(zs, coeff, g,(NodeTree_2) node.getNode());
     }
 
 

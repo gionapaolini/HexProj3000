@@ -8,6 +8,7 @@
 package hypertree;
 
 import BotAlgorithms.MCTS.NodeTree;
+import BotAlgorithms.MCTS_2.NodeTree_2;
 
 import java.awt.*;
 
@@ -112,7 +113,7 @@ class HTDraw {
      * @param node
      * @param aChildnode
      */
-    void drawBranch(HTCoordS zs1, HTCoordS zs2, Graphics g, NodeTree node, NodeTree aChildnode) {
+    void drawBranch(HTCoordS zs1, HTCoordS zs2, Graphics g, NodeTree_2 node, NodeTree_2 aChildnode) {
         // TODO a ameliorer
         g.setColor(Color.black);
         g.drawLine(zs1.x, zs1.y, zs2.x, zs2.y);
@@ -125,7 +126,7 @@ class HTDraw {
      * @param g     the graphic context
      * @param datenKnoten
      */
-    void drawNode(HTCoordS zs, double coeff, Graphics g, NodeTree datenKnoten) {
+    void drawNode(HTCoordS zs, double coeff, Graphics g, NodeTree_2 datenKnoten) {
         // TODO a ameliorer        
         double minMax = Math.min(sMax.x, sMax.y);
         int radius = (int) Math.round(model.getRadius() * minMax * coeff);
